@@ -1,9 +1,18 @@
 package com.ecs.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.time.LocalDateTime;
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @MappedSuperclass
+@EntityListeners(BaseEntityListener.class)
 public class BaseEntity {
 
     @Id
@@ -22,7 +31,7 @@ public class BaseEntity {
     @Column(nullable = false)
     private Long lastUpdateUserId;
 
-    boolean isDeleted = false;
+    private Boolean isDeleted = false;
 
 
 }
