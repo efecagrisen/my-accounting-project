@@ -1,7 +1,11 @@
 package com.ecs.dto;
 
 import com.ecs.enums.ClientVendorType;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class ClientVendorDto {
 
     private Long id;

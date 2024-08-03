@@ -1,7 +1,11 @@
 package com.ecs.dto;
 
 import com.ecs.enums.ProductUnit;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class ProductDto {
 
     private Long id;
