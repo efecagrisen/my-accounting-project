@@ -14,7 +14,14 @@ public interface CompanyService {
 
     List<CompanyDto> findCompaniesOfNonRootUsers(Long id);
 
-
     CompanyDto findById(Long id);
+
+    void save(CompanyDto companyDto);
+
+    void update(CompanyDto companyDto);
+
+    void activateCompanyStatus(Long companyId);
+
+    void deactivateCompanyStatus(Long companyId);
 
 }

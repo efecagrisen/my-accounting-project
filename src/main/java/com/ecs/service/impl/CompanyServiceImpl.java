@@ -4,6 +4,8 @@ import com.ecs.dto.CompanyDto;
 import com.ecs.dto.UserDto;
 import com.ecs.entity.Company;
 import com.ecs.entity.User;
+import com.ecs.enums.CompanyStatus;
+import com.ecs.enums.CountriesApiPlaceHolderTemp;
 import com.ecs.mapper.MapperUtil;
 import com.ecs.repository.CompanyRepository;
 import com.ecs.repository.UserRepository;
@@ -11,6 +13,9 @@ import com.ecs.service.CompanyService;
 import com.ecs.service.SecurityService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Collections;
 import java.util.List;
@@ -76,5 +81,41 @@ public class CompanyServiceImpl implements CompanyService {
     public CompanyDto findById(Long id) {
         return mapperUtil.convert(companyRepository.findById(id), CompanyDto.class);
     }
+
+    @Override
+    public void save(CompanyDto companyDto) {
+
+        if (companyDto.getCompanyStatus()==null){
+            companyDto.setCompanyStatus(CompanyStatus.PASSIVE);
+        }
+        companyRepository.save(mapperUtil.convert(companyDto,Company.class));
+    }
+
+    @Override
+    public void update(CompanyDto companyDto) {
+
+        companyDto.setCompanyStatus(companyDto.getCompanyStatus());
+
+        companyRepository.save(mapperUtil.convert(companyDto,Company.class));
+
+    }
+
+    @Override
+    public void activateCompanyStatus(Long companyId) {
+        Company companyToBeActivated = companyRepository.findById(companyId).get();
+        companyToBeActivated.setCompanyStatus(CompanyStatus.ACTIVE);
+        save(findById(companyId));
+
+    }
+
+    @Override
+    public void deactivateCompanyStatus(Long companyId) {
+        Company companyToBeDeactivated = companyRepository.findById(companyId).get();
+        companyToBeDeactivated.setCompanyStatus(CompanyStatus.PASSIVE);
+        save(findById(companyId));
+    }
+
+
+
 
 }
