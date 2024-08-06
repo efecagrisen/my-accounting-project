@@ -22,17 +22,14 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/user/**").hasAuthority("Root User")
-                        .requestMatchers("/user/**").hasAuthority("Admin")
-                        .requestMatchers("/project/**").hasAuthority("Manager")
-                        .requestMatchers("/task/employee/**").hasAuthority("Employee")
-                        .requestMatchers("/task/**").hasAuthority("Manager")
+                        .requestMatchers("/user/**").hasAnyAuthority("Root User","Admin")
+                        .requestMatchers("/companies/**").hasAnyAuthority("Root User")
                         .requestMatchers(
                                 "/",
                                 "/login",
                                 "/fragments/**",
                                 "/assets/**",
-                                "/images/**"
+                                "/img/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
