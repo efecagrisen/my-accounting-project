@@ -48,14 +48,12 @@ public class UserController {
 
                 model.addAttribute("newUser", new UserDto());
                 model.addAttribute("userRoles",roleService.listAllRolesOtherThanRoot());
-//                model.addAttribute("companies",companyService.getCompanyDtoByLoggedInUser());
 
-//                model.addAttribute("companies",companyService.listAllCompanies());
             if (securityService.getLoggedInUser().getId()==1){
                 model.addAttribute("companies",companyService.listAllCompanies());
-            }else {
-                model.addAttribute("companies",companyService.getCompanyDtoByLoggedInUser());
-            }
+                }else {
+                    model.addAttribute("companies",companyService.getCompanyDtoByLoggedInUser());
+                }
         return "/user/user-create";
     }
 
