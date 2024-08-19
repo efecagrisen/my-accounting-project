@@ -21,7 +21,7 @@ public class Product extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private ProductUnit productUnit;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Category category;
 
 }

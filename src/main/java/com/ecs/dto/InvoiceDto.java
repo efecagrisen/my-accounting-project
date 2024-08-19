@@ -23,7 +23,7 @@ public class InvoiceDto {
     private InvoiceType invoiceType;
     private LocalDate date;
     private CompanyDto companyDto;
-    private ClientVendorDto clientVendorDto;
+    private ClientVendorDto clientVendor;
     private BigDecimal price;
     private BigDecimal tax;
     private BigDecimal total;

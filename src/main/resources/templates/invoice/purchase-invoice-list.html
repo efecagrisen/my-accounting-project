@@ -3,12 +3,12 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       lang="en">
 
-<head th:replace="fragments/head :: header"></head>
+<head th:replace="~{fragments/head :: header}"></head>
 
 <body>
     <div class="dashboard-main-wrapper">
-        <div th:replace="fragments/header :: header"></div>
-        <div th:replace="fragments/left-sidebar :: left-sidebar"></div>
+        <div th:replace="~{fragments/header :: header}"></div>
+        <div th:replace="~{fragments/left-sidebar :: left-sidebar}"></div>
         <div class="dashboard-wrapper">
             <div class="dashboard-ecommerce">
                 <div class="container-fluid dashboard-content">
@@ -50,7 +50,9 @@
                                                                 <tr th:each="invoice,comStat : ${invoices}">
                                                                     <td th:text="${comStat.count}"></td>
                                                                     <td th:text="${invoice.invoiceNo}"></td>
-                                                                    <td th:text="${invoice.clientVendor.getClientVendorName}"></td>
+<!--                                                                    <td th:text="${invoice.invoiceNo}"></td>-->
+                                                                    <td th:text="${invoice.clientVendor != null ? invoice.clientVendor.clientVendorName : ''}"></td>
+<!--                                                                    <td th:text="${invoice.clientVendorDto.clientVendorName}"></td>-->
                                                                     <td th:text="${#temporals.format(invoice.date, 'MMMM dd, yyyy')}"></td>
                                                                     <td th:text="${invoice.price}"></td>
                                                                     <td th:text="${invoice.tax}"></td>
@@ -102,8 +104,8 @@
             </div>
         </div>
     </div>
-    <div th:replace="fragments/footer :: footer"></div>
-    <div th:replace="fragments/javascript :: js"></div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+    <div th:replace="~{fragments/javascript :: js}"></div>
 </body>
 
 </html>

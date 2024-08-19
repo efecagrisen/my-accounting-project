@@ -29,10 +29,10 @@ public class Invoice extends BaseEntity{
     @Column(columnDefinition = "DATE")
     private LocalDate date;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private ClientVendor clientVendor;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Company company;
 
 }
