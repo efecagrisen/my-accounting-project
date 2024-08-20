@@ -67,7 +67,29 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
         InvoiceProduct savedInvoice = invoiceProductRepository.save(invoiceProduct);
 
         return mapperUtil.convert(savedInvoice, InvoiceProductDto.class);
-//        return mapperUtil.convert(invoiceProductRepository.save(mapperUtil.convert(invoiceProductDto, InvoiceProduct.class)), InvoiceProductDto.class);
+    }
+
+    @Override
+    public void deleteById(Long invoiceProductId) {
+
+        InvoiceProduct invoiceProduct = invoiceProductRepository.findById(invoiceProductId).get();
+
+        invoiceProduct.setIsDeleted(true);
+
+        invoiceProductRepository.save(invoiceProduct);
+    }
+
+    @Override
+    public void removeInvoiceProductFromInvoice(Long invoiceId, Long invoiceProductId) {
+
+
+        List<InvoiceProductDto> invoiceProductDtoList = findByInvoiceId(invoiceId);
+
+        invoiceProductDtoList.stream()
+                .filter(invoiceProductDto -> invoiceProductDto.getId() == invoiceProductId)
+                .forEach(invoiceProductDto -> deleteById(invoiceProductDto.getId()));
+
+
 
     }
 

@@ -65,11 +65,12 @@ public class InvoiceServiceImpl implements InvoiceService {
 
                         BigDecimal totalPriceWithoutTax = calculateTotalWithoutTax(productsOfInvoice);
                         BigDecimal taxAmount = calculateTax(productsOfInvoice);
-                        BigDecimal totalPriceWithTax = calculateTotalWithTax(productsOfInvoice);
+//                        BigDecimal totalPriceWithTax = calculateTotalWithTax(productsOfInvoice);
 
                         invoice.setPrice(totalPriceWithoutTax);
-                        invoice.setTotal(totalPriceWithTax);
                         invoice.setTax(taxAmount);
+                        invoice.setTotal(totalPriceWithoutTax.add(taxAmount));
+//                        invoice.setTotal(totalPriceWithTax);
 
                         return invoice;
                     })
@@ -108,10 +109,11 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public void update(InvoiceDto foundInvoiceDtoToBeUpdated, InvoiceDto invoiceWithNewFeatures) {
 
-        foundInvoiceDtoToBeUpdated.setId(invoiceWithNewFeatures.getId());
-        foundInvoiceDtoToBeUpdated.setInvoiceType(invoiceWithNewFeatures.getInvoiceType());
-        foundInvoiceDtoToBeUpdated.setInvoiceStatus(invoiceWithNewFeatures.getInvoiceStatus());
-        foundInvoiceDtoToBeUpdated.setCompanyDto(invoiceWithNewFeatures.getCompanyDto());
+        invoiceWithNewFeatures.setId(foundInvoiceDtoToBeUpdated.getId());
+        invoiceWithNewFeatures.setInvoiceType(foundInvoiceDtoToBeUpdated.getInvoiceType());
+        invoiceWithNewFeatures.setInvoiceStatus(foundInvoiceDtoToBeUpdated.getInvoiceStatus());
+        invoiceWithNewFeatures.setCompanyDto(securityService.getLoggedInUser().getCompany());
+        //todo company should come from found invoice
 
         invoiceRepository.save(mapperUtil.convert(invoiceWithNewFeatures, Invoice.class));
 
@@ -123,7 +125,6 @@ public class InvoiceServiceImpl implements InvoiceService {
         Invoice invoiceToBeDeleted =invoiceRepository.findById(id).get();
         invoiceToBeDeleted.setIsDeleted(true);
         invoiceRepository.save(invoiceToBeDeleted);
-
     }
 
     @Override
@@ -166,10 +167,10 @@ public class InvoiceServiceImpl implements InvoiceService {
         return totalWithoutTax;
     }
 
-    @Override
-    public BigDecimal calculateTotalWithTax(List<InvoiceProductDto> invoiceProductDtoList) {
-        return calculateTotalWithoutTax(invoiceProductDtoList).add(calculateTax(invoiceProductDtoList));
-    }
+//    @Override
+//    public BigDecimal calculateTotalWithTax(List<InvoiceProductDto> invoiceProductDtoList) {
+//        return calculateTotalWithoutTax(invoiceProductDtoList).add(calculateTax(invoiceProductDtoList));
+//    }
 
     @Override
     public String generateNextInvoiceNumber(Invoice lastInvoice, InvoiceType invoiceType) {
@@ -230,6 +231,14 @@ public class InvoiceServiceImpl implements InvoiceService {
         Invoice savedInvoice = invoiceRepository.save(invoiceToCreate);
 
         return mapperUtil.convert(savedInvoice, InvoiceDto.class);
+    }
+
+    @Override
+    public void approveInvoice(Long invoiceId) {
+        Invoice invoiceToApprove = invoiceRepository.findById(invoiceId).get();
+        invoiceToApprove.setInvoiceStatus(InvoiceStatus.APPROVED);
+        invoiceRepository.save(invoiceToApprove);
+
     }
 
 

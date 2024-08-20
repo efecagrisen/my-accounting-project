@@ -29,7 +29,7 @@ public interface InvoiceService {
 
     BigDecimal calculateTotalWithoutTax(List<InvoiceProductDto> invoiceProductDtoList);
 
-    BigDecimal calculateTotalWithTax(List<InvoiceProductDto> invoiceProductDtoList);
+//    BigDecimal calculateTotalWithTax(List<InvoiceProductDto> invoiceProductDtoList);
 
     String generateNextInvoiceNumber(Invoice lastInvoice, InvoiceType invoiceType);
 
@@ -37,5 +37,7 @@ public interface InvoiceService {
 
     InvoiceDto generateNewInvoice(InvoiceType invoiceType);
     InvoiceDto create(InvoiceDto invoiceDto, InvoiceType invoiceType);
+
+    void approveInvoice(Long invoiceId);
 
 }

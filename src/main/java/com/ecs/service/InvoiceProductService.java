@@ -14,6 +14,10 @@ public interface InvoiceProductService {
 
     InvoiceProductDto create(InvoiceProductDto invoiceProductDto, Long invoiceId);
 
+    void removeInvoiceProductFromInvoice(Long invoiceId, Long invoiceProductId);
+
+    void deleteById(Long invoiceProductId);
+
 
 
 
