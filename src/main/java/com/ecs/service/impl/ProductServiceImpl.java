@@ -40,4 +40,17 @@ public class ProductServiceImpl implements ProductService {
         return mapperUtil.convert(productRepository.findById(productId), ProductDto.class);
     }
 
+    @Override
+    public void save(ProductDto productDto) {
+        productRepository.save(mapperUtil.convert(productDto,Product.class));
+    }
+
+    @Override
+    public void deleteById(Long productId) {
+        Product productToBeDeleted = productRepository.findById(productId).get();
+        productToBeDeleted.setIsDeleted(true);
+        productRepository.save(productToBeDeleted);
+    }
+
+
 }

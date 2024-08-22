@@ -10,4 +10,7 @@ public interface ProductService {
 
     ProductDto findById(Long productId);
 
+    void save(ProductDto productDto);
+    void deleteById(Long productId);
+
 }

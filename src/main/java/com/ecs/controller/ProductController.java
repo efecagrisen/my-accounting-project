@@ -10,10 +10,10 @@ import com.ecs.repository.ProductRepository;
 import com.ecs.service.CategoryService;
 import com.ecs.service.ProductService;
 import com.ecs.service.SecurityService;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -37,23 +37,57 @@ public class ProductController {
     }
 
     @GetMapping("/list")
-    public String listAllCompanyProducts(Model model){
+    public String listAllCompanyProducts(Model model) {
 
-        model.addAttribute("products",productService.listAllProducts());
+        model.addAttribute("products", productService.listAllProducts());
 
         return "product/product-list";
     }
 
     @GetMapping("/create")
-    public String createProduct(Model model){
+    public String createProduct(Model model) {
 
         model.addAttribute("newProduct", new ProductDto());
-        model.addAttribute("categories", Arrays.asList(categoryService.findAll()));
+        model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("productUnits", Arrays.asList(ProductUnit.values()));
 
         return "product/product-create";
     }
 
+    @PostMapping("/create")
+    public String insertProduct(@ModelAttribute("newProduct") ProductDto productDto) {
+
+        productService.save(productDto);
+
+        return "redirect:/products/list";
+    }
+
+    @GetMapping("/update/{id}")
+    public String editProduct(@PathVariable("id") Long id, Model model) {
+
+        model.addAttribute("product", productService.findById(id));
+        model.addAttribute("categories", categoryService.findAll());
+        model.addAttribute("productUnits", Arrays.asList(ProductUnit.values()));
+
+        return "product/product-update";
+    }
+
+    @PostMapping("/update/{id}")
+    public String updateProduct(@ModelAttribute("product") ProductDto productDto, Model model) {
+
+        productService.save(productDto);
+
+        return "redirect:/products/list";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteProduct(@PathVariable("id") Long id){
+
+        productService.deleteById(id);
+
+        return "redirect:/products/list";
+
+    }
 
 
 }

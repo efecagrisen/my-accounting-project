@@ -3,7 +3,9 @@ package com.ecs.converter;
 import com.ecs.dto.CategoryDto;
 import com.ecs.service.CategoryService;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CategoryDtoConverter implements Converter<String, CategoryDto> {
 
     private final CategoryService categoryService;
@@ -21,4 +23,5 @@ public class CategoryDtoConverter implements Converter<String, CategoryDto> {
 
         return categoryService.findById(Long.parseLong(source));
     }
+
 }
