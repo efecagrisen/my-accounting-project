@@ -17,7 +17,7 @@ public class ProductDto {
     private Integer quantityInStock;
     private Integer lowLimitAlert;
     private ProductUnit productUnit;
-    private CategoryDto categoryDto;
+    private CategoryDto category;
     private boolean hasProduct;
 
 }
