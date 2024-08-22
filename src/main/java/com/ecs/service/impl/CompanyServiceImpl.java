@@ -45,7 +45,36 @@ public class CompanyServiceImpl implements CompanyService {
         } else {
 
             Company company = companyRepository.getCompanyForCurrent(loggedInUser.getCompany().getId());
+
             return Collections.singletonList(mapperUtil.convert(company, CompanyDto.class));
         }
     }
+
+    @Override
+    public List<CompanyDto> listAllCompanies() {
+        return companyRepository.findAll()
+                .stream()
+                .map(company -> mapperUtil.convert(company,CompanyDto.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public CompanyDto findCompanyOfLoggedInUser() {
+        return mapperUtil.convert(companyRepository.findById(securityService.getLoggedInUser().getCompany().getId()),CompanyDto.class);
+    }
+
+    @Override
+    public List<CompanyDto> findCompaniesOfNonRootUsers(Long id) {
+        return companyRepository.findCompaniesOfNonRootUsers(id)
+                .stream()
+                .map(company -> mapperUtil.convert(company,CompanyDto.class))
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
+    public CompanyDto findById(Long id) {
+        return mapperUtil.convert(companyRepository.findById(id), CompanyDto.class);
+    }
+
 }
