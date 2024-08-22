@@ -103,51 +103,51 @@ values
  'https://www.modtech.com', 2, 3);
 
 
--- insert into categories(insert_date_time, insert_user_id, is_deleted, last_update_date_time, last_update_user_id,
---                        description, company_id)
--- values
--- -- COMPANY-2 / Green Tech
--- ('2023-04-15 00:00:00', 2, false, '2023-04-15 00:00:00', 2, 'Computer', 2),
--- ('2023-04-15 00:00:00', 2, false, '2023-04-15 00:00:00', 2, 'Phone', 2),
--- -- COMPANY-3 / Blue Tech
--- ('2023-04-15 00:00:00', 3, false, '2023-04-15 00:00:00', 3, 'Phone', 3),
--- ('2023-04-15 00:00:00', 3, false, '2023-04-15 00:00:00', 3, 'TV', 3),
--- ('2023-04-15 00:00:00', 3, false, '2023-04-15 00:00:00', 3, 'Monitor', 3);
--- --
--- insert into products(insert_date_time, insert_user_id, is_deleted, last_update_date_time, last_update_user_id,
---                      name, quantity_in_stock, low_limit_alert, product_unit, category_id)
--- VALUES
--- -- COMPANY-2 / Green Tech
--- ('2023-04-15 00:00', 2, 'false', '2023-04-15 00:00', 2, 'HP Elite 800G1 Desktop Computer Package', 8, 5, 'PCS', 1),
--- ('2023-04-15 00:00', 2, 'false', '2023-04-15 00:00', 2, '2021 Apple MacBook Pro', 0, 5, 'PCS', 1),
--- ('2023-04-15 00:00', 2, 'false', '2023-04-15 00:00', 2, 'Apple iPhone-13', 0, 5, 'PCS', 2),
--- ('2023-04-15 00:00', 2, 'false', '2023-04-15 00:00', 2, 'SAMSUNG Galaxy S22', 0, 5, 'PCS', 2),
--- -- COMPANY-3 / Blue Tech
--- ('2023-04-15 00:00', 3, 'false', '2023-04-15 00:00', 3, 'Samsung Galaxy S20 (renewed)', 10, 5, 'PCS', 3),
--- ('2023-04-15 00:00', 3, 'false', '2023-04-15 00:00', 3, 'Samsung Galaxy S22', 20, 5, 'PCS', 3),
--- ('2023-04-15 00:00', 3, 'false', '2023-04-15 00:00', 3, 'Moto G Power', 0, 5, 'PCS', 3);
---
--- --
--- insert into invoices(insert_date_time, insert_user_id, is_deleted, last_update_date_time, last_update_user_id,
---                      date, invoice_no, invoice_type, invoice_status, client_vendor_id, company_id)
--- values
--- -- COMPANY-2 / Green Tech
--- ('2023-04-09 00:00', 2, 'false', '2023-04-09 00:00', 2, '2023-04-09', 'P-001', 'PURCHASE', 'APPROVED', 2, 2),
--- ('2023-04-10 00:00', 2, 'false', '2023-04-10 00:00', 2, '2023-04-10', 'P-002', 'PURCHASE', 'APPROVED', 3, 2),
--- ('2023-04-17 00:00', 2, 'false', '2023-04-17 00:00', 2, '2023-04-17', 'S-001', 'SALES', 'APPROVED', 1, 2),
--- ('2023-04-19 00:00', 2, 'false', '2023-04-19 00:00', 2, '2023-04-19', 'S-002', 'SALES', 'AWAITING_APPROVAL', 1, 2),
--- ('2023-05-20 00:00', 2, 'false', '2023-05-20 00:00', 2, '2023-05-20', 'S-003', 'SALES', 'AWAITING_APPROVAL', 1, 2),
---
--- -- COMPANY-3 / Blue Tech
--- ('2023-04-09 00:00', 3, 'false', '2023-04-09 00:00', 3, '2023-04-09', 'P-001', 'PURCHASE', 'APPROVED', 5, 3),
--- ('2023-04-10 00:00', 3, 'false', '2023-04-10 00:00', 3, '2023-04-10', 'P-002', 'PURCHASE', 'APPROVED', 5, 3),
--- ('2023-04-13 00:00', 3, 'false', '2023-04-13 00:00', 3, '2023-04-13', 'S-001', 'SALES', 'APPROVED', 4, 3),
--- ('2023-05-18 00:00', 3, 'false', '2023-05-18 00:00', 3, '2023-05-18', 'S-002', 'SALES', 'AWAITING_APPROVAL', 4, 3),
--- ('2023-05-19 00:00', 3, 'false', '2023-05-19 00:00', 3, '2023-05-19', 'S-003', 'SALES', 'AWAITING_APPROVAL', 4, 3),
--- ('2023-05-20 00:00', 3, 'false', '2023-05-20 00:00', 3, '2023-05-20', 'S-004', 'SALES', 'AWAITING_APPROVAL', 6, 3),
--- ('2023-05-21 00:00', 3, 'false', '2023-05-21 00:00', 3, '2023-05-21', 'S-005', 'SALES', 'AWAITING_APPROVAL', 6, 3),
--- ('2023-06-15 00:00', 3, 'false', '2023-06-15 00:00', 3, '2023-06-15', 'P-003', 'PURCHASE', 'AWAITING_APPROVAL', 6, 3);
---
+insert into categories(insert_date_time, insert_user_id, is_deleted, last_update_date_time, last_update_user_id,
+                       description, company_id)
+values
+-- COMPANY-2 / Green Tech
+('2023-04-15 00:00:00', 2, false, '2023-04-15 00:00:00', 2, 'Computer', 2),
+('2023-04-15 00:00:00', 2, false, '2023-04-15 00:00:00', 2, 'Phone', 2),
+-- COMPANY-3 / Blue Tech
+('2023-04-15 00:00:00', 3, false, '2023-04-15 00:00:00', 3, 'Phone', 3),
+('2023-04-15 00:00:00', 3, false, '2023-04-15 00:00:00', 3, 'TV', 3),
+('2023-04-15 00:00:00', 3, false, '2023-04-15 00:00:00', 3, 'Monitor', 3);
+
+insert into products(insert_date_time, insert_user_id, is_deleted, last_update_date_time, last_update_user_id,
+                     name, quantity_in_stock, low_limit_alert, product_unit, category_id)
+VALUES
+-- COMPANY-2 / Green Tech
+('2023-04-15 00:00', 2, 'false', '2023-04-15 00:00', 2, 'HP Elite 800G1 Desktop Computer Package', 8, 5, 'PCS', 1),
+('2023-04-15 00:00', 2, 'false', '2023-04-15 00:00', 2, '2021 Apple MacBook Pro', 0, 5, 'PCS', 1),
+('2023-04-15 00:00', 2, 'false', '2023-04-15 00:00', 2, 'Apple iPhone-13', 0, 5, 'PCS', 2),
+('2023-04-15 00:00', 2, 'false', '2023-04-15 00:00', 2, 'SAMSUNG Galaxy S22', 0, 5, 'PCS', 2),
+-- COMPANY-3 / Blue Tech
+('2023-04-15 00:00', 3, 'false', '2023-04-15 00:00', 3, 'Samsung Galaxy S20 (renewed)', 10, 5, 'PCS', 3),
+('2023-04-15 00:00', 3, 'false', '2023-04-15 00:00', 3, 'Samsung Galaxy S22', 20, 5, 'PCS', 3),
+('2023-04-15 00:00', 3, 'false', '2023-04-15 00:00', 3, 'Moto G Power', 0, 5, 'PCS', 3);
+
+
+insert into invoices(insert_date_time, insert_user_id, is_deleted, last_update_date_time, last_update_user_id,
+                     date, invoice_no, invoice_type, invoice_status, client_vendor_id, company_id)
+values
+-- COMPANY-2 / Green Tech
+('2023-04-09 00:00', 2, 'false', '2023-04-09 00:00', 2, '2023-04-09', 'P-001', 'PURCHASE', 'APPROVED', 2, 2),
+('2023-04-10 00:00', 2, 'false', '2023-04-10 00:00', 2, '2023-04-10', 'P-002', 'PURCHASE', 'APPROVED', 3, 2),
+('2023-04-17 00:00', 2, 'false', '2023-04-17 00:00', 2, '2023-04-17', 'S-001', 'SALES', 'APPROVED', 1, 2),
+('2023-04-19 00:00', 2, 'false', '2023-04-19 00:00', 2, '2023-04-19', 'S-002', 'SALES', 'AWAITING_APPROVAL', 1, 2),
+('2023-05-20 00:00', 2, 'false', '2023-05-20 00:00', 2, '2023-05-20', 'S-003', 'SALES', 'AWAITING_APPROVAL', 1, 2),
+
+-- COMPANY-3 / Blue Tech
+('2023-04-09 00:00', 3, 'false', '2023-04-09 00:00', 3, '2023-04-09', 'P-001', 'PURCHASE', 'APPROVED', 5, 3),
+('2023-04-10 00:00', 3, 'false', '2023-04-10 00:00', 3, '2023-04-10', 'P-002', 'PURCHASE', 'APPROVED', 5, 3),
+('2023-04-13 00:00', 3, 'false', '2023-04-13 00:00', 3, '2023-04-13', 'S-001', 'SALES', 'APPROVED', 4, 3),
+('2023-05-18 00:00', 3, 'false', '2023-05-18 00:00', 3, '2023-05-18', 'S-002', 'SALES', 'AWAITING_APPROVAL', 4, 3),
+('2023-05-19 00:00', 3, 'false', '2023-05-19 00:00', 3, '2023-05-19', 'S-003', 'SALES', 'AWAITING_APPROVAL', 4, 3),
+('2023-05-20 00:00', 3, 'false', '2023-05-20 00:00', 3, '2023-05-20', 'S-004', 'SALES', 'AWAITING_APPROVAL', 6, 3),
+('2023-05-21 00:00', 3, 'false', '2023-05-21 00:00', 3, '2023-05-21', 'S-005', 'SALES', 'AWAITING_APPROVAL', 6, 3),
+('2023-06-15 00:00', 3, 'false', '2023-06-15 00:00', 3, '2023-06-15', 'P-003', 'PURCHASE', 'AWAITING_APPROVAL', 6, 3);
+
 -- insert into invoice_products(insert_date_time, insert_user_id, is_deleted, last_update_date_time, last_update_user_id,
 --                              price, quantity, remaining_quantity, tax, profit_loss, invoice_id, product_id)
 -- values
