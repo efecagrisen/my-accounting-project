@@ -240,8 +240,8 @@
                 </div>
               </div>
               <div class="col invoice-details">
-                <h1 class="invoice-id" th:text="${invoice.getInvoiceNo()}"></h1>
-                <div class="date" th:text="'Invoice Date: '+${invoice.getDate()}"></div>
+                <h1 class="invoice-id" th:text="${invoice.invoiceNo}"></h1>
+                <div class="date" th:text="'Invoice Date: '+${invoice.date}"></div>
               </div>
               <table>
                 <thead>
@@ -257,11 +257,14 @@
                 <tbody>
                 <tr th:each="invoiceProduct, iStat :${invoiceProducts}">
                   <td class="total" th:text="${iStat.count}"></td>
-                  <td class="text-left"><h3 th:text="${invoiceProduct.getProduct().getName()}"></h3></td>
-                  <td class="unit" th:text="'$ '+${invoiceProduct.getPrice()}"></td>
-                  <td class="unit" th:text="${invoiceProduct.getQuantity()}"></td>
-                  <td class="unit" th:text="'% '+${invoiceProduct.getTax()}"></td>
-                  <td class="total" th:text="'$ '+${invoiceProduct.getTotal()}"></td>
+                  <td class="text-left"><h3 th:text="${invoiceProduct.product.name}"></h3></td>
+                  <td class="unit" th:text="'$ '+${invoiceProduct.price}"></td>
+                  <td class="unit" th:text="${invoiceProduct.quantity}"></td>
+                  <td class="unit" th:text="'% '+${invoiceProduct.tax}"></td>
+                  <td class="total" th:text="'$ '+${invoiceProduct.price + invoiceProduct.tax}"></td>
+<!--                  todo-->
+                  <!--                  temporary total calculation added to fix total coming null-->
+
                 </tr>
                 </tbody>
                 <tfoot>
@@ -269,19 +272,21 @@
                   <td></td>
                   <td colspan="2"></td>
                   <td colspan="2">SUBTOTAL</td>
-                  <td th:text="'$ '+${invoice.getPrice()}"></td>
+                  <td th:text="'$ '+${invoice.price}"></td>
                 </tr>
                 <tr>
                   <td></td>
                   <td colspan="2"></td>
                   <td colspan="2">TAX </td>
-                  <td th:text="'$ '+${invoice.getTax()}">510</td>
+                  <td th:text="'$ '+${invoice.tax}">510</td>
                 </tr>
                 <tr>
                   <td></td>
                   <td colspan="2"></td>
                   <td colspan="2">GRAND TOTAL</td>
-                  <td th:text="'$ '+${invoice.getTotal()}"></td>
+                  <td th:text="'$ '+${invoice.price + invoice.tax}"></td>
+<!--                  todo-->
+<!--                  temporary total calculation added to fix total coming null-->
                 </tr>
                 </tfoot>
               </table>

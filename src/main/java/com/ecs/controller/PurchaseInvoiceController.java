@@ -44,6 +44,7 @@ public class PurchaseInvoiceController {
         List<InvoiceDto> purchaseInvoiceList = invoiceService.listAllByCompanyIdAndInvoiceType(securityService.getLoggedInUserCompanyId(), InvoiceType.PURCHASE);
 
         model.addAttribute("invoices", purchaseInvoiceList);
+        System.out.println("-------------------------------"+purchaseInvoiceList);
 
         return "/invoice/purchase-invoice-list";
     }
