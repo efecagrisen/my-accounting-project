@@ -42,4 +42,11 @@ public class SecurityServiceImpl implements SecurityService {
 
         return userService.findByUsername(username);
     }
+
+    @Override
+    public Long getLoggedInUserCompanyId() {
+        return getLoggedInUser().getCompany().getId();
+    }
+
+
 }

@@ -27,10 +27,10 @@ public class InvoiceProduct extends BaseEntity{
     private BigDecimal profitLoss;
     private int remainingQuantity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Invoice invoice;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Product product;
 
 }
