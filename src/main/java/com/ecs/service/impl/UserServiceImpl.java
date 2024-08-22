@@ -4,7 +4,9 @@ import com.ecs.dto.UserDto;
 import com.ecs.mapper.MapperUtil;
 import com.ecs.repository.UserRepository;
 import com.ecs.service.UserService;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserServiceImpl implements UserService {
 
     private final MapperUtil mapperUtil;

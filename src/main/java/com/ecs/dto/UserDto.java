@@ -1,5 +1,10 @@
 package com.ecs.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class UserDto {
 
     private Long id;
@@ -10,7 +15,7 @@ public class UserDto {
     private String lastname;
     private String phone;
     private boolean enabled;
-    private RoleDto roleDto;
-    private CompanyDto companyDto;
+    private RoleDto role;
+    private CompanyDto company;
     private boolean isOnlyAdmin;
 }
