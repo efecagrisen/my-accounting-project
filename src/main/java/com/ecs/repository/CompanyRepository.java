@@ -9,10 +9,10 @@ import java.util.Optional;
 
 public interface CompanyRepository extends JpaRepository<Company,Long> {
 
-    @Query("SELECT c FROM Company c WHERE c.id = ?1")
+    @Query("SELECT c FROM Company c WHERE c.id = ?1 ORDER BY c.companyStatus ASC")
     Company getCompanyForCurrent(Long id);
 
-    @Query("SELECT c FROM Company c WHERE c.id != ?1")
+    @Query("SELECT c FROM Company c WHERE c.id != ?1 ORDER BY c.companyStatus ASC")
     List<Company> getAllCompanyForRootUser(Long id);
 
     Optional<Company> findById(Long id);
