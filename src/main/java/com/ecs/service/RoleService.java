@@ -11,6 +11,8 @@ public interface RoleService {
     List<RoleDto> listAllRoles();
     List<RoleDto> listAllRolesOtherThanRoot();
 
+    List<RoleDto> listRolesByLoggedInUserId(Long id);
+
 
 
 

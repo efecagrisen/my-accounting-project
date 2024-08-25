@@ -5,6 +5,7 @@ import com.ecs.service.CompanyService;
 import com.ecs.service.RoleService;
 import com.ecs.service.SecurityService;
 import com.ecs.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -46,11 +47,11 @@ public class UserController {
     @GetMapping("/create")
     public String createUser(Model model){
 
-                model.addAttribute("newUser", new UserDto());
-                model.addAttribute("userRoles",roleService.listAllRolesOtherThanRoot());
+            model.addAttribute("newUser", new UserDto());
+            model.addAttribute("userRoles",roleService.listRolesByLoggedInUserId(securityService.getLoggedInUser().getId()));
 
             if (securityService.getLoggedInUser().getId()==1){
-                model.addAttribute("companies",companyService.listAllCompanies());
+                model.addAttribute("companies",companyService.listNonRootCompanies());
                 }else {
                     model.addAttribute("companies",companyService.getCompanyDtoByLoggedInUser());
                 }
@@ -58,18 +59,25 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public String insertUser(@ModelAttribute ("user") UserDto user, BindingResult bindingResult, Model model){
+    public String insertUser(@Valid @ModelAttribute ("newUser") UserDto user, BindingResult bindingResult, Model model){
 
-//        if (bindingResult.hasErrors()){
-//
-//            model.addAttribute("userRoles",roleService.listAllRoles());
-//            model.addAttribute("companies",companyService.listAllCompanies());
-//
-//            return "/user/user-create";
-//        }
+        boolean emailExists = userService.checkUsernameExists(user.getUsername());
 
+        if (bindingResult.hasErrors()){
+            if (emailExists){
+                bindingResult.rejectValue("username","","A user with this email already exists. Please try with different email.");
+            }
+
+            model.addAttribute("userRoles",roleService.listRolesByLoggedInUserId(securityService.getLoggedInUser().getId()));
+            if (securityService.getLoggedInUser().getId()==1){
+                model.addAttribute("companies",companyService.listNonRootCompanies());
+            }else {
+                model.addAttribute("companies",companyService.getCompanyDtoByLoggedInUser());
+            }
+
+            return "/user/user-create";
+        }
         userService.save(user);
-
         return "redirect:/users/list";
     }
 
@@ -86,7 +94,24 @@ public class UserController {
 
 
     @PostMapping("/update/{id}")
-    public String updateUser(@ModelAttribute ("user") UserDto user){
+    public String updateUser(@Valid @ModelAttribute ("user") UserDto user,BindingResult bindingResult, Model model){
+
+        boolean emailExists = userService.checkUsernameExists(user.getUsername());
+
+        if (bindingResult.hasErrors()){
+//            if (emailExists){
+//                bindingResult.rejectValue("username","","A user with this email already exists. Please try with different email.");
+//            }
+
+            model.addAttribute("userRoles",roleService.listRolesByLoggedInUserId(securityService.getLoggedInUser().getId()));
+            if (securityService.getLoggedInUser().getId()==1){
+                model.addAttribute("companies",companyService.listAllCompanies());
+            }else {
+                model.addAttribute("companies",companyService.getCompanyDtoByLoggedInUser());
+            }
+
+            return "/user/user-update";
+        }
 
         userService.save(user);
 

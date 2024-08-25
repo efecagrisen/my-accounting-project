@@ -67,6 +67,17 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    public List<CompanyDto> listNonRootCompanies() {
+
+        List<Company> nonRootCompanies = companyRepository.findAll().stream()
+                .filter(company -> company.getId()!=1L)
+                .collect(Collectors.toList());
+
+        return nonRootCompanies.stream().map(company -> mapperUtil.convert(company,CompanyDto.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public CompanyDto findCompanyOfLoggedInUser() {
         return mapperUtil.convert(companyRepository.findById(securityService.getLoggedInUser().getCompany().getId()),CompanyDto.class);
     }

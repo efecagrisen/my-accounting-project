@@ -78,5 +78,8 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-
+    @Override
+    public boolean checkUsernameExists(String username) {
+        return userRepository.findByUsername(username) != null;
+    }
 }

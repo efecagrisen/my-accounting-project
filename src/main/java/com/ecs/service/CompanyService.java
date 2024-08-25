@@ -11,6 +11,8 @@ public interface CompanyService {
 
     List<CompanyDto> listAllCompanies();
 
+    List<CompanyDto> listNonRootCompanies();
+
     CompanyDto findCompanyOfLoggedInUser();
 
     List<CompanyDto> findCompaniesOfNonRootUsers(Long id);

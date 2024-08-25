@@ -20,5 +20,7 @@ public interface UserService {
 
     void delete(UserDto userDto);
 
+    boolean checkUsernameExists(String username);
+
 
 }
