@@ -1,10 +1,12 @@
 package com.ecs.service.impl;
 
 import com.ecs.dto.CompanyDto;
+import com.ecs.dto.RoleDto;
 import com.ecs.dto.UserDto;
 import com.ecs.entity.User;
 import com.ecs.mapper.MapperUtil;
 import com.ecs.repository.UserRepository;
+import com.ecs.service.RoleService;
 import com.ecs.service.SecurityService;
 import com.ecs.service.UserService;
 import org.springframework.context.annotation.Lazy;
@@ -46,11 +48,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> listUsersByCompanyId(Long companyId) {
+    public List<UserDto> findUsersByCompanyIdOrderByRoleIdAsc(Long companyId) {
 
-        return userRepository.findUsersByCompanyId(securityService.getLoggedInUser().getCompany().getId())
+        return userRepository.findUsersByCompanyIdOrderByRoleIdAsc(securityService.getLoggedInUser().getCompany().getId())
                 .stream()
                 .map(user->mapperUtil.convert(user, UserDto.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserDto> listAdminUsers(String roleDescription) {
+
+        return userRepository.findAllByRoleDescriptionOrderByCompany_TitleAsc("Admin")
+                .stream()
+                .map(user ->  mapperUtil.convert(user,UserDto.class))
                 .collect(Collectors.toList());
     }
 

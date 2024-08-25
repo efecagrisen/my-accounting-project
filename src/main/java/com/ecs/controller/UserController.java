@@ -36,9 +36,9 @@ public class UserController {
         Long companyId = securityService.getLoggedInUser().getCompany().getId();
         model.addAttribute("roles",roleService.listAllRoles());
         if (securityService.getLoggedInUser().getId()==1){
-            model.addAttribute("users",userService.listAllUsers());
+            model.addAttribute("users",userService.listAdminUsers("Admin"));
         }else {
-            model.addAttribute("users", userService.listUsersByCompanyId(companyId));
+            model.addAttribute("users", userService.findUsersByCompanyIdOrderByRoleIdAsc(companyId));
         }
         return "/user/user-list";
     }
