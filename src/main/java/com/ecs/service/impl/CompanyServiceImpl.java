@@ -14,6 +14,8 @@ import com.ecs.service.SecurityService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -122,11 +124,11 @@ public class CompanyServiceImpl implements CompanyService {
 
 
     @Override
-    public BindingResult addUpdateTitleValidation(CompanyDto companyDto, BindingResult bindingResult) {
+    public BindingResult addTitleValidation(String title, BindingResult bindingResult) {
 
-            if (companyRepository.existsByTitleAndIdNot(companyDto.getTitle(),companyDto.getId())){
-                bindingResult.addError(new FieldError("company","title","This title already exists."));
-            }
+        if (companyRepository.existsByTitle(title)){
+            bindingResult.addError(new FieldError("newCompany","title","This title already exists."));
+        }
         return bindingResult;
     }
 
