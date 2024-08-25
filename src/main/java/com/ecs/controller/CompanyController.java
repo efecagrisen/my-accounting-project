@@ -6,8 +6,10 @@ import com.ecs.mapper.MapperUtil;
 import com.ecs.service.CompanyService;
 import com.ecs.service.RoleService;
 import com.ecs.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -44,9 +46,16 @@ public class CompanyController {
     }
 
     @PostMapping("/create")
-    public String insertCompany(@ModelAttribute ("company") CompanyDto company){
+    public String insertCompany(Model model, @Valid @ModelAttribute ("newCompany") CompanyDto newCompany, BindingResult bindingResult){
 
-        companyService.save(company);
+        bindingResult = companyService.addTitleValidation(newCompany.getTitle(), bindingResult);
+
+        if (bindingResult.hasFieldErrors()){
+            model.addAttribute("countries", CountriesApiPlaceHolderTemp.values());
+            return "company/company-create";
+        }
+
+        companyService.save(newCompany);
 
         return "redirect:/companies/list";
     }
@@ -79,7 +88,14 @@ public class CompanyController {
     }
 
     @PostMapping("/update/{id}")
-    public String updateCompany(@ModelAttribute ("id") CompanyDto company){
+    public String updateCompany(Model model,@Valid @ModelAttribute ("company") CompanyDto company, BindingResult bindingResult){
+
+        bindingResult = companyService.addUpdateTitleValidation(company,bindingResult);
+
+        if (bindingResult.hasFieldErrors()){
+            model.addAttribute("countries", CountriesApiPlaceHolderTemp.values());
+            return "/company/company-update";
+        }
 
         companyService.update(company);
 

@@ -1,6 +1,7 @@
 package com.ecs.service;
 
 import com.ecs.dto.CompanyDto;
+import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
@@ -18,10 +19,13 @@ public interface CompanyService {
 
     void save(CompanyDto companyDto);
 
-    void update(CompanyDto companyDto);
+    CompanyDto update(CompanyDto companyDto);
 
     void activateCompanyStatus(Long companyId);
 
     void deactivateCompanyStatus(Long companyId);
+
+    BindingResult addTitleValidation(String title,BindingResult bindingResult);
+    BindingResult addUpdateTitleValidation(CompanyDto companyDto,BindingResult bindingResult);
 
 }

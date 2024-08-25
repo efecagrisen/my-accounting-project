@@ -20,5 +20,8 @@ public interface CompanyRepository extends JpaRepository<Company,Long> {
     @Query("SELECT c FROM Company c JOIN User u ON c.id = u.company.id WHERE u.id != ?1")
     List<Company> findCompaniesOfNonRootUsers(Long id);
 
+    boolean existsByTitle(String title);
+    boolean existsByTitleAndIdNot(String title,Long id);
+
 
 }
