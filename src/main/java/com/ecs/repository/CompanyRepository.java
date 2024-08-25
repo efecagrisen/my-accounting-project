@@ -21,6 +21,7 @@ public interface CompanyRepository extends JpaRepository<Company,Long> {
     List<Company> findCompaniesOfNonRootUsers(Long id);
 
     boolean existsByTitle(String title);
+    boolean existsByTitleAndIdNot(String title,Long id);
 
 
 }

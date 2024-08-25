@@ -50,8 +50,7 @@ public class CompanyController {
 
         bindingResult = companyService.addTitleValidation(newCompany.getTitle(), bindingResult);
 
-        if (bindingResult.hasErrors()){
-            model.addAttribute("newCompany",newCompany);
+        if (bindingResult.hasFieldErrors()){
             model.addAttribute("countries", CountriesApiPlaceHolderTemp.values());
             return "company/company-create";
         }
@@ -89,10 +88,13 @@ public class CompanyController {
     }
 
     @PostMapping("/update/{id}")
-    public String updateCompany(@Valid @ModelAttribute ("id") CompanyDto company,BindingResult bindingResult, Model model){
+    public String updateCompany(Model model,@Valid @ModelAttribute ("company") CompanyDto company, BindingResult bindingResult){
 
-        if (bindingResult.hasErrors()){
-            return "redirect:/companies/update/{id}";
+        bindingResult = companyService.addUpdateTitleValidation(company,bindingResult);
+
+        if (bindingResult.hasFieldErrors()){
+            model.addAttribute("countries", CountriesApiPlaceHolderTemp.values());
+            return "/company/company-update";
         }
 
         companyService.update(company);

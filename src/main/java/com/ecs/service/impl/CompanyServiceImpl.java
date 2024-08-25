@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -94,12 +95,15 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public void update(CompanyDto companyDto) {
+    public CompanyDto update(CompanyDto newCompanyDto) {
 
-        companyDto.setCompanyStatus(companyDto.getCompanyStatus());
+        Optional<Company> oldCompany = companyRepository.findById(newCompanyDto.getId());
+        if (oldCompany.isPresent()){
+            newCompanyDto.setCompanyStatus(oldCompany.get().getCompanyStatus());
 
-        companyRepository.save(mapperUtil.convert(companyDto,Company.class));
-
+            return mapperUtil.convert(companyRepository.save(mapperUtil.convert(newCompanyDto,Company.class)),CompanyDto.class);
+        }
+        return null;
     }
 
     @Override
@@ -122,6 +126,15 @@ public class CompanyServiceImpl implements CompanyService {
 
             if (companyRepository.existsByTitle(title)){
                 bindingResult.addError(new FieldError("newCompany","title","This title already exists."));
+            }
+        return bindingResult;
+    }
+
+    @Override
+    public BindingResult addUpdateTitleValidation(CompanyDto companyDto, BindingResult bindingResult) {
+
+            if (companyRepository.existsByTitleAndIdNot(companyDto.getTitle(),companyDto.getId())){
+                bindingResult.addError(new FieldError("company","title","This title already exists."));
             }
         return bindingResult;
     }
