@@ -133,11 +133,12 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public BindingResult addUpdateTitleValidation(CompanyDto companyDto, BindingResult bindingResult) {
 
-            if (companyRepository.existsByTitleAndIdNot(companyDto.getTitle(),companyDto.getId())){
-                bindingResult.addError(new FieldError("company","title","This title already exists."));
-            }
+        if (companyRepository.existsByTitleAndIdNot(companyDto.getTitle(),companyDto.getId())){
+            bindingResult.addError(new FieldError("company","title","This title already exists."));
+        }
         return bindingResult;
     }
+
 
 
 }
