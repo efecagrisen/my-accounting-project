@@ -1,6 +1,7 @@
 package com.ecs.entity.common;
 
 import com.ecs.entity.User;
+import com.ecs.enums.CompanyStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -51,7 +52,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return this.user.getCompany().getCompanyStatus().equals(CompanyStatus.ACTIVE);
     }
 
     @Override
