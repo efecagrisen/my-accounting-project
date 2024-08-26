@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ClientVendorRepository extends JpaRepository<ClientVendor,Long> {
 
-    List<ClientVendor> getAllByCompanyId(Long loggedInUsersCompanyId);
+    List<ClientVendor> getAllByCompanyIdOrderByClientVendorTypeAsc(Long loggedInUsersCompanyId);
 
 
 }

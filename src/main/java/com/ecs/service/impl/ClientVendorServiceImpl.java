@@ -41,7 +41,7 @@ public class ClientVendorServiceImpl implements ClientVendorService {
 
         Long loggedInUserCompanyId = securityService.getLoggedInUser().getCompany().getId();
 
-        return clientVendorRepository.getAllByCompanyId(loggedInUserCompanyId)
+        return clientVendorRepository.getAllByCompanyIdOrderByClientVendorTypeAsc(loggedInUserCompanyId)
                 .stream()
                 .map(clientVendor -> mapperUtil.convert(clientVendor, ClientVendorDto.class))
                 .collect(Collectors.toList());
