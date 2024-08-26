@@ -41,7 +41,7 @@ public class UserController {
             model.addAttribute("users",userService.listAdminUsers("Admin"));
         }else {
             model.addAttribute("users", userService.findUsersByCompanyIdOrderByRoleIdAsc(companyId));
-        }
+        }//todo isOnlyAdmin doesn't work
         return "/user/user-list";
     }
 

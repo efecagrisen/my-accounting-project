@@ -46,7 +46,13 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.findAll()
                 .stream()
-                .map(dto-> mapperUtil.convert(dto,UserDto.class))
+                .map(user ->  {
+                    UserDto userDto = mapperUtil.convert(user,UserDto.class);
+                    if (userDto.getRole().getDescription()=="Admin"){
+                        userDto.setOnlyAdmin(isOnlyAdmin(userDto));//todo isOnlyAdmin doesn't work
+                    }
+                    return userDto;
+                })
                 .collect(Collectors.toList());
     }
 
@@ -57,7 +63,13 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.findUsersByCompanyIdOrderByRoleIdAsc(securityService.getLoggedInUser().getCompany().getId())
                 .stream()
-                .map(user->mapperUtil.convert(user, UserDto.class))
+                .map(user ->  {
+                    UserDto userDto = mapperUtil.convert(user,UserDto.class);
+                    if (userDto.getRole().getDescription()=="Admin"){
+                        userDto.setOnlyAdmin(isOnlyAdmin(userDto));//todo isOnlyAdmin doesn't work
+                    }
+                    return userDto;
+                })
                 .collect(Collectors.toList());
     }
 
@@ -68,15 +80,15 @@ public class UserServiceImpl implements UserService {
                 .stream()
                 .map(user ->  {
                     UserDto userDto = mapperUtil.convert(user,UserDto.class);
-                    userDto.setOnlyAdmin(isOnlyAdmin(userDto));
+                    userDto.setOnlyAdmin(isOnlyAdmin(userDto));//todo isOnlyAdmin doesn't work
                     return userDto;
                 })
                 .collect(Collectors.toList());
     }
 
-    private boolean isOnlyAdmin(UserDto userDto){
-        Long isOnlyAdmin = userRepository.isUserOnlyAdmin(userDto.getCompany().getId());
-        return isOnlyAdmin ==1;
+    private boolean isOnlyAdmin(UserDto userDto){//todo isOnlyAdmin doesn't work
+        Long isTheOnlyAdmin = userRepository.isUserOnlyAdmin(userDto.getCompany().getId());
+        return isTheOnlyAdmin ==1;
     }
 
     @Override
