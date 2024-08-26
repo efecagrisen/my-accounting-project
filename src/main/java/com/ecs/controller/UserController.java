@@ -88,7 +88,11 @@ public class UserController {
 
         model.addAttribute("user",userService.findById(id));
         model.addAttribute("userRoles",roleService.listAllRolesOtherThanRoot());
-        model.addAttribute("companies",securityService.getLoggedInUser().getCompany());
+        if (securityService.getLoggedInUser().getId()==1){
+            model.addAttribute("companies",companyService.listNonRootCompanies());
+        }else {
+            model.addAttribute("companies",companyService.getCompanyDtoByLoggedInUser());
+        }
 
         return "/user/user-update";
     }
@@ -109,7 +113,7 @@ public class UserController {
 
             model.addAttribute("userRoles",roleService.listRolesByLoggedInUserId(securityService.getLoggedInUser().getId()));
             if (securityService.getLoggedInUser().getId()==1){
-                model.addAttribute("companies",companyService.listAllCompanies());
+                model.addAttribute("companies",companyService.listNonRootCompanies());
             }else {
                 model.addAttribute("companies",companyService.getCompanyDtoByLoggedInUser());
             }
