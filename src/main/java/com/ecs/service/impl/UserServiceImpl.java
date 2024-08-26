@@ -66,8 +66,17 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.findAllByRoleDescriptionOrderByCompany_TitleAsc("Admin")
                 .stream()
-                .map(user ->  mapperUtil.convert(user,UserDto.class))
+                .map(user ->  {
+                    UserDto userDto = mapperUtil.convert(user,UserDto.class);
+                    userDto.setOnlyAdmin(isOnlyAdmin(userDto));
+                    return userDto;
+                })
                 .collect(Collectors.toList());
+    }
+
+    private boolean isOnlyAdmin(UserDto userDto){
+        Long isOnlyAdmin = userRepository.isUserOnlyAdmin(userDto.getCompany().getId());
+        return isOnlyAdmin ==1;
     }
 
     @Override
