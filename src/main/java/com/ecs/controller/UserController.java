@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -101,6 +102,9 @@ public class UserController {
         if (bindingResult.hasErrors()){
 //            if (emailExists){
 //                bindingResult.rejectValue("username","","A user with this email already exists. Please try with different email.");
+//            }
+//            if (userService.checkIsUserOnlyAdmin(user,user.getRole())){
+//                bindingResult.addError(new ObjectError("user","This user is the only admin of the company name company. Please, do not change role or company"));
 //            }
 
             model.addAttribute("userRoles",roleService.listRolesByLoggedInUserId(securityService.getLoggedInUser().getId()));

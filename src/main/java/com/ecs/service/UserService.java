@@ -22,5 +22,7 @@ public interface UserService {
 
     boolean checkUsernameExists(String username);
 
+//    boolean checkIsUserOnlyAdmin(UserDto userDto,RoleDto roleDto);
+
 
 }

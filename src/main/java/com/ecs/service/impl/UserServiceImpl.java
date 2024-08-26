@@ -10,6 +10,7 @@ import com.ecs.service.RoleService;
 import com.ecs.service.SecurityService;
 import com.ecs.service.UserService;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,11 +22,13 @@ public class UserServiceImpl implements UserService {
     private final MapperUtil mapperUtil;
     private final UserRepository userRepository;
     private final SecurityService securityService;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(MapperUtil mapperUtil, UserRepository userRepository,@Lazy SecurityService securityService) {
+    public UserServiceImpl(MapperUtil mapperUtil, UserRepository userRepository, @Lazy SecurityService securityService, PasswordEncoder passwordEncoder) {
         this.mapperUtil = mapperUtil;
         this.userRepository = userRepository;
         this.securityService = securityService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -46,6 +49,8 @@ public class UserServiceImpl implements UserService {
                 .map(dto-> mapperUtil.convert(dto,UserDto.class))
                 .collect(Collectors.toList());
     }
+
+
 
     @Override
     public List<UserDto> findUsersByCompanyIdOrderByRoleIdAsc(Long companyId) {
@@ -68,7 +73,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void save(UserDto userDto) {
         userDto.setEnabled(true);
-        userRepository.save(mapperUtil.convert(userDto, User.class));
+        User user = mapperUtil.convert(userDto,User.class);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
     }
 
     @Override
