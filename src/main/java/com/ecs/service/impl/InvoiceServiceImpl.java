@@ -243,5 +243,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     }
 
-
+    @Override
+    public boolean existsByClientVendorId(Long clientVendorId) {
+        return invoiceRepository.existsByClientVendorId(clientVendorId);
+    }
 }

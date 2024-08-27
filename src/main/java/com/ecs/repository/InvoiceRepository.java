@@ -23,4 +23,6 @@ public interface InvoiceRepository extends JpaRepository<Invoice,Long> {
 
     Optional<Invoice> findTopByCompanyIdAndInvoiceTypeOrderByInvoiceNoDesc(Long companyId,InvoiceType invoiceType);
 
+    boolean existsByClientVendorId(Long clientVendorId);
+
 }

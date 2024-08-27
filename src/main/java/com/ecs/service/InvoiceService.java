@@ -40,4 +40,6 @@ public interface InvoiceService {
 
     void approveInvoice(Long invoiceId);
 
+    boolean existsByClientVendorId(Long clientVendorId);
+
 }

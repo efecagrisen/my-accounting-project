@@ -5,6 +5,7 @@ import com.ecs.enums.ClientVendorType;
 import com.ecs.enums.CountriesApiPlaceHolderTemp;
 import com.ecs.mapper.MapperUtil;
 import com.ecs.service.ClientVendorService;
+import com.ecs.service.InvoiceService;
 import com.ecs.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/clientVendors")
@@ -21,18 +24,28 @@ public class ClientVendorController {
     private final ClientVendorService clientVendorService;
     private final UserService userService;
     private final MapperUtil mapperUtil;
+    private final InvoiceService invoiceService;
 
-    public ClientVendorController(ClientVendorService clientVendorService, UserService userService, MapperUtil mapperUtil) {
+    public ClientVendorController(ClientVendorService clientVendorService, UserService userService, MapperUtil mapperUtil, InvoiceService invoiceService) {
         this.clientVendorService = clientVendorService;
         this.userService = userService;
         this.mapperUtil = mapperUtil;
+        this.invoiceService = invoiceService;
     }
 
 
     @GetMapping("/list")
     public String listCompanyClientVendors(Model model){
 
-        model.addAttribute("clientVendors",clientVendorService.listCompanyClientVendors());
+        List<ClientVendorDto> clientVendorDtoList = clientVendorService.listCompanyClientVendors();
+
+            clientVendorDtoList.forEach(clientVendorDto -> {
+                    if (invoiceService.existsByClientVendorId(clientVendorDto.getId())) {
+                        clientVendorDto.setHasInvoice(true);
+                    }
+            });
+
+        model.addAttribute("clientVendors", clientVendorDtoList);
 
         return "/clientVendor/clientVendor-list";
     }

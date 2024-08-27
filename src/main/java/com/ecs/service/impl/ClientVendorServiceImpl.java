@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,14 +23,16 @@ public class ClientVendorServiceImpl implements ClientVendorService {
     private final CompanyService companyService;
     private final RoleService roleService;
     private final SecurityService securityService;
+    private final InvoiceService invoiceService;
 
-    public ClientVendorServiceImpl(MapperUtil mapperUtil, ClientVendorRepository clientVendorRepository, UserService userService, CompanyService companyService, RoleService roleService, SecurityService securityService) {
+    public ClientVendorServiceImpl(MapperUtil mapperUtil, ClientVendorRepository clientVendorRepository, UserService userService, CompanyService companyService, RoleService roleService, SecurityService securityService, InvoiceService invoiceService) {
         this.mapperUtil = mapperUtil;
         this.clientVendorRepository = clientVendorRepository;
         this.userService = userService;
         this.companyService = companyService;
         this.roleService = roleService;
         this.securityService = securityService;
+        this.invoiceService = invoiceService;
     }
 
 
@@ -78,7 +81,6 @@ public class ClientVendorServiceImpl implements ClientVendorService {
         ClientVendor clientVendorToBeDeleted = clientVendorRepository.findById(id).get();
         clientVendorToBeDeleted.setIsDeleted(true);
         clientVendorRepository.save(clientVendorToBeDeleted);
-
     }
 
     @Override
