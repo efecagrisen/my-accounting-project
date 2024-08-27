@@ -9,7 +9,7 @@ import java.util.List;
 public interface CategoryService {
     CategoryDto findById(Long categoryId);
 
-    List<CategoryDto> findAll();
+    List<CategoryDto> findAllByCompanyOrderByDescription();
 
     void save(CategoryDto categoryDto);
     void delete(CategoryDto categoryDto);

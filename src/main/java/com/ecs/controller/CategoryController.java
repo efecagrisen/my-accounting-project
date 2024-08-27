@@ -26,7 +26,7 @@ public class CategoryController {
     @GetMapping("/list")
     public String listAllCategories(Model model){
 
-        model.addAttribute("categories",categoryService.findAll());
+        model.addAttribute("categories",categoryService.findAllByCompanyOrderByDescription());
 
         return "/category/category-list";
     }

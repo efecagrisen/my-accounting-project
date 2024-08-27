@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface CategoryRepository extends JpaRepository<Category,Long> {
 
-    List<Category> findAllByCompanyId(Long companyId);
+    List<Category> findAllByCompanyIdOrderByDescription(Long companyId);
 
 }

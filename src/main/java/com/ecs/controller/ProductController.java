@@ -48,7 +48,7 @@ public class ProductController {
     public String createProduct(Model model) {
 
         model.addAttribute("newProduct", new ProductDto());
-        model.addAttribute("categories", categoryService.findAll());
+        model.addAttribute("categories", categoryService.findAllByCompanyOrderByDescription());
         model.addAttribute("productUnits", Arrays.asList(ProductUnit.values()));
 
         return "product/product-create";
@@ -66,7 +66,7 @@ public class ProductController {
     public String editProduct(@PathVariable("id") Long id, Model model) {
 
         model.addAttribute("product", productService.findById(id));
-        model.addAttribute("categories", categoryService.findAll());
+        model.addAttribute("categories", categoryService.findAllByCompanyOrderByDescription());
         model.addAttribute("productUnits", Arrays.asList(ProductUnit.values()));
 
         return "product/product-update";
