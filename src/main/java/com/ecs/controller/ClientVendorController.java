@@ -6,8 +6,10 @@ import com.ecs.enums.CountriesApiPlaceHolderTemp;
 import com.ecs.mapper.MapperUtil;
 import com.ecs.service.ClientVendorService;
 import com.ecs.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -40,14 +42,22 @@ public class ClientVendorController {
 
         model.addAttribute("newClientVendor", new ClientVendorDto());
         model.addAttribute("countries", CountriesApiPlaceHolderTemp.values());
-//        model.addAttribute("clientVendorTypes", ClientVendorType.values());
         model.addAttribute("clientVendorTypes", Arrays.asList(ClientVendorType.values()));
 
         return "/clientVendor/clientVendor-create";
     }
 
     @PostMapping("/create")
-    public String insertClientVendor(@ModelAttribute ("clientVendor") ClientVendorDto clientVendorDto){
+    public String insertClientVendor(Model model,@Valid @ModelAttribute ("newClientVendor") ClientVendorDto clientVendorDto, BindingResult bindingResult){
+
+        bindingResult = clientVendorService.checkClientVendorNameExistsByType(clientVendorDto.getClientVendorName(),clientVendorDto.getClientVendorType(),bindingResult);
+
+        if (bindingResult.hasFieldErrors()){
+            model.addAttribute("countries", CountriesApiPlaceHolderTemp.values());
+            model.addAttribute("clientVendorTypes", Arrays.asList(ClientVendorType.values()));
+
+            return "clientVendor/clientVendor-create";
+        }
 
         clientVendorService.save(clientVendorDto);
 
@@ -66,7 +76,14 @@ public class ClientVendorController {
     }
 
     @PostMapping("/update/{id}")
-    public String updateClientVendor(@ModelAttribute("clientVendor") ClientVendorDto clientVendorDto){
+    public String updateClientVendor(@Valid @ModelAttribute("clientVendor") ClientVendorDto clientVendorDto, BindingResult bindingResult, Model model){
+
+        if (bindingResult.hasFieldErrors()){
+            model.addAttribute("countries", CountriesApiPlaceHolderTemp.values());
+            model.addAttribute("clientVendorTypes", Arrays.asList(ClientVendorType.values()));
+
+            return "clientVendor/clientVendor-update";
+        }
 
         clientVendorService.save(clientVendorDto);
 
