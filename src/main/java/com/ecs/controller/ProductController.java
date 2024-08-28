@@ -83,9 +83,17 @@ public class ProductController {
     }
 
     @PostMapping("/update/{id}")
-    public String updateProduct(@ModelAttribute("product") ProductDto productDto, Model model) {
+    public String updateProduct(@Valid @ModelAttribute("product") ProductDto productDto,BindingResult bindingResult ,Model model) {
 
-        productService.save(productDto);
+        if (bindingResult.hasErrors()){
+            model.addAttribute("product", productDto);
+            model.addAttribute("categories", categoryService.findAllByCompanyOrderByDescription());
+            model.addAttribute("productUnits", Arrays.asList(ProductUnit.values()));
+
+            return "product/product-update";
+        }
+
+        productService.update(productDto);
 
         return "redirect:/products/list";
     }

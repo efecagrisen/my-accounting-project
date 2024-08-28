@@ -46,6 +46,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public void update(ProductDto productDto) {
+        Product productToBeUpdated = productRepository.findById(productDto.getId()).orElseThrow();
+
+        productDto.setQuantityInStock(productToBeUpdated.getQuantityInStock());
+        save(productDto);
+    }
+
+    @Override
     public void deleteById(Long productId) {
         Product productToBeDeleted = productRepository.findById(productId).get();
         productToBeDeleted.setIsDeleted(true);

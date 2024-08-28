@@ -11,6 +11,7 @@ public interface ProductService {
     ProductDto findById(Long productId);
 
     void save(ProductDto productDto);
+    void update(ProductDto productDto);
     void deleteById(Long productId);
 
     boolean doesCompanyCategoryHaveProduct(String categoryDescription, Long companyId);
