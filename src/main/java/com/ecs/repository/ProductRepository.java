@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product,Long> {
 
-    @Query("SELECT p FROM Product p JOIN Category c ON p.category.id = c.id WHERE c.company = ?1")
+    @Query("SELECT p FROM Product p JOIN Category c ON p.category.id = c.id WHERE c.company = ?1 ORDER BY p.category.description ASC , p.name ASC ")
     List<Product> findAllByCompany(Company company);
 
     Optional<Product> findById(Long id);
