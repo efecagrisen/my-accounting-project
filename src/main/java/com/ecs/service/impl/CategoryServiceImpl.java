@@ -57,5 +57,9 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.save(categoryToDelete);
     }
 
+    @Override
+    public boolean isCategoryDescriptionNotUnique(String description, Long companyId) {
 
+        return categoryRepository.existsCategoryByDescriptionAndCompanyId(description,companyId);
+    }
 }

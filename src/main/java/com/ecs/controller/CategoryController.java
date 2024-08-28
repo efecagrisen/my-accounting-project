@@ -4,8 +4,11 @@ import com.ecs.dto.CategoryDto;
 import com.ecs.mapper.MapperUtil;
 import com.ecs.service.CategoryService;
 import com.ecs.service.SecurityService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -40,8 +43,15 @@ public class CategoryController {
     }
 
     @PostMapping("/create")
-    public String insertCategory(@ModelAttribute ("category") CategoryDto categoryDto){
+    public String insertCategory(@Valid @ModelAttribute ("newCategory") CategoryDto categoryDto, BindingResult bindingResult,Model model){
 
+            if (categoryService.isCategoryDescriptionNotUnique(categoryDto.getDescription(),securityService.getLoggedInUserCompanyId())){
+                bindingResult.rejectValue("description"," ","This category already exists");
+                }
+
+            if (bindingResult.hasErrors()){
+                return "/category/category-create";
+            }
         categoryService.save(categoryDto);
 
         return "redirect:/categories/list";
