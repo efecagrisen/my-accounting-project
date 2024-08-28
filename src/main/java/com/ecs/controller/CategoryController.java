@@ -43,9 +43,9 @@ public class CategoryController {
     }
 
     @PostMapping("/create")
-    public String insertCategory(@Valid @ModelAttribute ("newCategory") CategoryDto categoryDto, BindingResult bindingResult,Model model){
+    public String insertCategory(@Valid @ModelAttribute ("newCategory") CategoryDto categoryDto, BindingResult bindingResult){
 
-            if (categoryService.isCategoryDescriptionNotUnique(categoryDto.getDescription(),securityService.getLoggedInUserCompanyId())){
+            if (categoryService.isCompanyCategoryDescriptionNotUnique(categoryDto.getDescription(),securityService.getLoggedInUserCompanyId())){
                 bindingResult.rejectValue("description"," ","This category already exists");
                 }
 

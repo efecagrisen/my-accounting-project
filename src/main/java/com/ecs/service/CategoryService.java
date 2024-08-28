@@ -14,5 +14,5 @@ public interface CategoryService {
     void save(CategoryDto categoryDto);
     void delete(CategoryDto categoryDto);
 
-    boolean isCategoryDescriptionNotUnique(String description, Long companyId);
+    boolean isCompanyCategoryDescriptionNotUnique(String description, Long companyId);
 }

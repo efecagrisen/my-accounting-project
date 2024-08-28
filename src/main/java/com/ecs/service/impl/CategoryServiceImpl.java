@@ -58,7 +58,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public boolean isCategoryDescriptionNotUnique(String description, Long companyId) {
+    public boolean isCompanyCategoryDescriptionNotUnique(String description, Long companyId) {
 
         return categoryRepository.existsCategoryByDescriptionAndCompanyId(description,companyId);
     }
