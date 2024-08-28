@@ -18,4 +18,7 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
     @Query("SELECT CASE WHEN COUNT (p) > 0 THEN true ELSE false END FROM Product p JOIN Category c ON p.category.id = c.id WHERE c.company.id = ?2 AND p.category.description = ?1")
     boolean existsProductByCompanyCategory(String categoryDescription, Long CompanyId);
 
+    @Query("SELECT CASE WHEN COUNT (p) > 0 THEN true ELSE false END FROM Product p JOIN InvoiceProduct i ON p.id = i.product.id WHERE p.id = ?1")
+    boolean existsProductInAnyInvoice(Long productId);
+
 }

@@ -34,7 +34,4 @@ public class ProductDto {
     @NotNull(message = "This is a required field.")
     private CategoryDto category;
 
-
-    private boolean hasProduct;
-
 }
