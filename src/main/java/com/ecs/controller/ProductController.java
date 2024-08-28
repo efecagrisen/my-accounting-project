@@ -10,9 +10,11 @@ import com.ecs.repository.ProductRepository;
 import com.ecs.service.CategoryService;
 import com.ecs.service.ProductService;
 import com.ecs.service.SecurityService;
+import jakarta.validation.Valid;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -55,7 +57,15 @@ public class ProductController {
     }
 
     @PostMapping("/create")
-    public String insertProduct(@ModelAttribute("newProduct") ProductDto productDto) {
+    public String insertProduct(@Valid @ModelAttribute("newProduct") ProductDto productDto, BindingResult bindingResult, Model model) {
+
+        if (bindingResult.hasErrors()){
+            model.addAttribute("newProduct", productDto);
+            model.addAttribute("categories", categoryService.findAllByCompanyOrderByDescription());
+            model.addAttribute("productUnits", Arrays.asList(ProductUnit.values()));
+
+            return "product/product-create";
+        }
 
         productService.save(productDto);
 
