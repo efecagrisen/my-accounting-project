@@ -6,6 +6,7 @@ import com.ecs.entity.Company;
 import com.ecs.mapper.MapperUtil;
 import com.ecs.repository.CategoryRepository;
 import com.ecs.service.CategoryService;
+import com.ecs.service.ProductService;
 import com.ecs.service.SecurityService;
 import org.springframework.stereotype.Service;
 
@@ -18,11 +19,13 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final MapperUtil mapperUtil;
     private final SecurityService securityService;
+    private final ProductService productService;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository, MapperUtil mapperUtil, SecurityService securityService) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository, MapperUtil mapperUtil, SecurityService securityService, ProductService productService) {
         this.categoryRepository = categoryRepository;
         this.mapperUtil = mapperUtil;
         this.securityService = securityService;
+        this.productService = productService;
     }
 
     @Override
@@ -61,5 +64,10 @@ public class CategoryServiceImpl implements CategoryService {
     public boolean isCompanyCategoryDescriptionNotUnique(String description, Long companyId) {
 
         return categoryRepository.existsCategoryByDescriptionAndCompanyId(description,companyId);
+    }
+
+    @Override
+    public boolean doesCompanyCategoryHaveProduct(String categoryDescription, Long companyId) {
+        return productService.doesCompanyCategoryHaveProduct(categoryDescription, companyId);
     }
 }

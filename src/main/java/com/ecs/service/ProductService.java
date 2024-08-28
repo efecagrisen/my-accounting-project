@@ -13,4 +13,6 @@ public interface ProductService {
     void save(ProductDto productDto);
     void deleteById(Long productId);
 
+    boolean doesCompanyCategoryHaveProduct(String categoryDescription, Long companyId);
+
 }

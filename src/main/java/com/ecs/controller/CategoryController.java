@@ -61,13 +61,26 @@ public class CategoryController {
     @GetMapping("/update/{id}")
     public String editCategory(@PathVariable ("id") Long id, Model model){
 
-        model.addAttribute("category",categoryService.findById(id));
+        CategoryDto categoryDto = categoryService.findById(id);
+        if(categoryService.doesCompanyCategoryHaveProduct(categoryDto.getDescription(), securityService.getLoggedInUserCompanyId())){
+            categoryDto.setHasProduct(true);
+        }
+
+        model.addAttribute("category",categoryDto);
 
         return "/category/category-update";
     }
 
     @PostMapping("/update/{id}")
-    public String updateCategory(@ModelAttribute ("category") CategoryDto categoryDto){
+    public String updateCategory(@Valid @ModelAttribute ("category") CategoryDto categoryDto, BindingResult bindingResult){
+
+        if (categoryService.isCompanyCategoryDescriptionNotUnique(categoryDto.getDescription(),securityService.getLoggedInUserCompanyId())){
+            bindingResult.rejectValue("description"," ","This category already exists");
+        }
+
+        if (bindingResult.hasErrors()){
+            return "/category/category-update";
+        }
 
         categoryService.save(categoryDto);
 

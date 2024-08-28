@@ -15,4 +15,6 @@ public interface CategoryService {
     void delete(CategoryDto categoryDto);
 
     boolean isCompanyCategoryDescriptionNotUnique(String description, Long companyId);
+
+    boolean doesCompanyCategoryHaveProduct(String categoryDescription, Long companyId);
 }

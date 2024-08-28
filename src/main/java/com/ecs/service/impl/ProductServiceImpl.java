@@ -52,5 +52,8 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(productToBeDeleted);
     }
 
-
+    @Override
+    public boolean doesCompanyCategoryHaveProduct(String categoryDescription, Long companyId) {
+        return productRepository.existsProductByCompanyCategory(categoryDescription,companyId);
+    }
 }
