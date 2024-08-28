@@ -11,6 +11,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/categories")
 public class CategoryController {
@@ -29,7 +31,15 @@ public class CategoryController {
     @GetMapping("/list")
     public String listAllCategories(Model model){
 
-        model.addAttribute("categories",categoryService.findAllByCompanyOrderByDescription());
+        List<CategoryDto> categoryDtoList = categoryService.findAllByCompanyOrderByDescription();
+
+        categoryDtoList.forEach(categoryDto -> {
+            if(categoryService.doesCompanyCategoryHaveProduct(categoryDto.getDescription(), securityService.getLoggedInUserCompanyId())){
+                categoryDto.setHasProduct(true);
+            }
+        });
+
+        model.addAttribute("categories",categoryDtoList);
 
         return "/category/category-list";
     }
