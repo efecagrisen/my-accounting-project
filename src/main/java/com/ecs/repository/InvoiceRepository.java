@@ -13,7 +13,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice,Long> {
 
     List<Invoice> findAllByCompanyId(Long companyId);
 
-    List<Invoice> findAllByCompanyIdAndInvoiceType(Long companyId, InvoiceType invoiceType);
+    List<Invoice> findAllByCompanyIdAndInvoiceTypeOrderByInvoiceNoDesc(Long companyId, InvoiceType invoiceType);
 
     Optional<Invoice> findById(Long id);
 

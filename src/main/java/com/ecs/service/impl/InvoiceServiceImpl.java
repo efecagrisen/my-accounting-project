@@ -53,7 +53,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public List<InvoiceDto> listAllByCompanyIdAndInvoiceType(Long companyId, InvoiceType invoiceType) {
 
-        List<InvoiceDto> invoiceDtoList = invoiceRepository.findAllByCompanyIdAndInvoiceType(companyId,invoiceType)
+        List<InvoiceDto> invoiceDtoList = invoiceRepository.findAllByCompanyIdAndInvoiceTypeOrderByInvoiceNoDesc(companyId,invoiceType)
                 .stream()
                 .map(invoice->mapperUtil.convert(invoice, InvoiceDto.class))
                 .collect(Collectors.toList());
