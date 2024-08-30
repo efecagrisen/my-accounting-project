@@ -80,6 +80,13 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
     }
 
     @Override
+    public void deleteByInvoice(InvoiceDto invoiceDto) {
+        List<InvoiceProduct> invoiceProductList = invoiceProductRepository.findByInvoiceId(invoiceDto.getId());
+        invoiceProductList.forEach(invoiceProduct -> invoiceProduct.setIsDeleted(true));
+        invoiceProductRepository.saveAll(invoiceProductList);
+    }
+
+    @Override
     public void removeInvoiceProductFromInvoice(Long invoiceId, Long invoiceProductId) {
 
 

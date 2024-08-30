@@ -126,6 +126,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 
         Invoice invoiceToBeDeleted =invoiceRepository.findById(id).get();
         invoiceToBeDeleted.setIsDeleted(true);
+
+        invoiceProductService.deleteByInvoice(mapperUtil.convert(invoiceToBeDeleted,InvoiceDto.class));
+
         invoiceRepository.save(invoiceToBeDeleted);
     }
 

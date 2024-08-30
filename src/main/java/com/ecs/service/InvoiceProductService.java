@@ -1,6 +1,8 @@
 package com.ecs.service;
 
+import com.ecs.dto.InvoiceDto;
 import com.ecs.dto.InvoiceProductDto;
+import com.ecs.entity.Invoice;
 import com.ecs.enums.InvoiceType;
 
 import java.util.List;
@@ -17,6 +19,7 @@ public interface InvoiceProductService {
     void removeInvoiceProductFromInvoice(Long invoiceId, Long invoiceProductId);
 
     void deleteById(Long invoiceProductId);
+    void deleteByInvoice(InvoiceDto invoiceDto);
 
 
 
