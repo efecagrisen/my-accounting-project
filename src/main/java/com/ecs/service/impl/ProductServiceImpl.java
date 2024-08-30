@@ -26,7 +26,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> listAllProducts() {
+    public List<ProductDto> listAllCompanyProducts() {
 
         Company loggedInUserCompany = mapperUtil.convert(securityService.getLoggedInUser().getCompany(), Company.class);
 

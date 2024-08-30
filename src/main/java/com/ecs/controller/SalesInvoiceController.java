@@ -69,7 +69,7 @@ public class SalesInvoiceController {
 
             model.addAttribute("invoice",foundInvoice);
             model.addAttribute("newInvoiceProduct",new InvoiceProductDto());
-            model.addAttribute("products",productService.listAllProducts());
+            model.addAttribute("products",productService.listAllCompanyProducts());
             model.addAttribute("invoiceProducts",invoiceProductService.findByInvoiceId(invoiceId));
             model.addAttribute("clients",clientVendorService.listCompanyClientVendorsByType(ClientVendorType.CLIENT));
 

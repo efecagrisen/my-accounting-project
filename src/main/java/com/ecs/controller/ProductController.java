@@ -40,7 +40,7 @@ public class ProductController {
 
     @GetMapping("/list")
     public String listAllCompanyProducts(Model model) {
-        model.addAttribute("products", productService.listAllProducts());
+        model.addAttribute("products", productService.listAllCompanyProducts());
 
         return "product/product-list";
     }

@@ -8,9 +8,11 @@ import com.ecs.enums.ClientVendorType;
 import com.ecs.enums.InvoiceType;
 import com.ecs.mapper.MapperUtil;
 import com.ecs.service.*;
+import jakarta.validation.Valid;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -58,14 +60,17 @@ public class PurchaseInvoiceController {
     }
 
     @PostMapping("/create")
-    public String insertPurchaseInvoice(@ModelAttribute ("newPurchaseInvoice") InvoiceDto invoiceDto,Model model){
-        InvoiceDto invoiceToBeInserted = invoiceService.create(invoiceDto,InvoiceType.PURCHASE);
+    public String insertPurchaseInvoice(@Valid @ModelAttribute ("newPurchaseInvoice") InvoiceDto invoiceDto,BindingResult bindingResult,Model model){
+
+            if (bindingResult.hasErrors()){
+                model.addAttribute("vendors", clientVendorService.listCompanyClientVendorsByType(ClientVendorType.VENDOR));
+                return "/invoice/purchase-invoice-create";
+            }
+        invoiceService.create(invoiceDto,InvoiceType.PURCHASE);
+
         Invoice invoice = invoiceService.getTheLatestInvoiceByType(InvoiceType.PURCHASE);
 
-//        model.addAttribute("product",Arrays.asList(productService.listAllProducts()));
-//        model.addAttribute("vendors",clientVendorService.listCompanyClientVendorsByType(ClientVendorType.VENDOR));
         return "redirect:/purchaseInvoices/update/"+invoice.getId();
-//        return "redirect:/purchaseInvoices/list";
     }
 
     @GetMapping("/update/{id}")
@@ -75,26 +80,36 @@ public class PurchaseInvoiceController {
 
         model.addAttribute("invoice",foundInvoice);
         model.addAttribute("newInvoiceProduct",new InvoiceProductDto());
-        model.addAttribute("products",productService.listAllProducts());
+        model.addAttribute("products",productService.listAllCompanyProducts());
         model.addAttribute("invoiceProducts",invoiceProductService.findByInvoiceId(invoiceId));
         model.addAttribute("vendors",clientVendorService.listCompanyClientVendorsByType(ClientVendorType.VENDOR));
-
 
         return "/invoice/purchase-invoice-update";
     }
 
     @PostMapping("/update/{id}")
-    public String updatePurchaseInvoice(@PathVariable ("id") Long id, @ModelAttribute ("invoice") InvoiceDto invoiceWithNewFeatures){
+    public String updatePurchaseInvoice( @PathVariable ("id") Long id, @ModelAttribute ("invoice") InvoiceDto invoiceWithNewFeatures){
 
         InvoiceDto foundInvoiceToBeUpdated = invoiceService.findById(id);
-
         invoiceService.update(foundInvoiceToBeUpdated,invoiceWithNewFeatures);
 
         return "redirect:/purchaseInvoices/list";
     }
 
     @PostMapping("/addInvoiceProduct/{id}")
-    public String addInvoiceProduct(@PathVariable ("id") Long id,@ModelAttribute InvoiceProductDto invoiceProductDto,Model model){
+    public String addInvoiceProduct(@PathVariable ("id") Long id,@Valid @ModelAttribute ("newInvoiceProduct") InvoiceProductDto invoiceProductDto,BindingResult bindingResult,Model model){
+
+            if (bindingResult.hasFieldErrors()){
+                InvoiceDto foundInvoice = invoiceService.findById(id);
+
+                model.addAttribute("invoice",foundInvoice);
+                model.addAttribute("newInvoiceProduct",invoiceProductDto);
+                model.addAttribute("products",productService.listAllCompanyProducts());
+                model.addAttribute("invoiceProducts",invoiceProductService.findByInvoiceId(id));
+                model.addAttribute("vendors",clientVendorService.listCompanyClientVendorsByType(ClientVendorType.VENDOR));
+
+                return "/invoice/purchase-invoice-update";
+            }
 
         invoiceProductService.create(invoiceProductDto,id);
 
@@ -129,7 +144,7 @@ public class PurchaseInvoiceController {
     }
 
     @GetMapping ("/delete/{id}")
-    public String deleteInvoice(Model model, @PathVariable ("id") Long id){
+    public String deleteInvoice(@PathVariable ("id") Long id){
 
         invoiceService.deleteById(id);
 
