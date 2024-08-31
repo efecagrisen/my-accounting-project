@@ -7,8 +7,10 @@ import com.ecs.enums.ClientVendorType;
 import com.ecs.enums.InvoiceType;
 import com.ecs.mapper.MapperUtil;
 import com.ecs.service.*;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -52,14 +54,18 @@ public class SalesInvoiceController {
         }
 
         @PostMapping("/create")
-        public String insertSalesInvoice(@ModelAttribute("newsalesInvoice") InvoiceDto invoiceDto, Model model){
-            InvoiceDto invoiceToBeInserted = invoiceService.create(invoiceDto,InvoiceType.SALES);
+        public String insertSalesInvoice(@Valid @ModelAttribute("newSalesInvoice") InvoiceDto invoiceDto, BindingResult bindingResult, Model model){
+
+            if (bindingResult.hasErrors()){
+                model.addAttribute("clients", clientVendorService.listCompanyClientVendorsByType(ClientVendorType.CLIENT));
+                return "/invoice/sales-invoice-create";
+            }
+
+            invoiceService.create(invoiceDto,InvoiceType.SALES);
+
             Invoice invoice = invoiceService.getTheLatestInvoiceByType(InvoiceType.SALES);
 
-//        model.addAttribute("product",Arrays.asList(productService.listAllProducts()));
-//        model.addAttribute("clients",clientVendorService.listCompanyClientVendorsByType(ClientVendorType.CLIENT));
             return "redirect:/salesInvoices/update/"+invoice.getId();
-//        return "redirect:/salesInvoices/list";
         }
 
         @GetMapping("/update/{id}")
@@ -72,7 +78,6 @@ public class SalesInvoiceController {
             model.addAttribute("products",productService.listAllCompanyProducts());
             model.addAttribute("invoiceProducts",invoiceProductService.findByInvoiceId(invoiceId));
             model.addAttribute("clients",clientVendorService.listCompanyClientVendorsByType(ClientVendorType.CLIENT));
-
 
             return "/invoice/sales-invoice-update";
         }
@@ -88,7 +93,19 @@ public class SalesInvoiceController {
         }
 
         @PostMapping("/addInvoiceProduct/{id}")
-        public String addInvoiceProduct(@PathVariable ("id") Long id,@ModelAttribute InvoiceProductDto invoiceProductDto,Model model){
+        public String addInvoiceProduct(@PathVariable ("id") Long id,@Valid @ModelAttribute ("newInvoiceProduct") InvoiceProductDto invoiceProductDto,BindingResult bindingResult,Model model){
+
+                if (bindingResult.hasFieldErrors()){
+                    InvoiceDto foundInvoice = invoiceService.findById(id);
+
+                    model.addAttribute("invoice",foundInvoice);
+                    model.addAttribute("newInvoiceProduct",invoiceProductDto);
+                    model.addAttribute("products",productService.listAllCompanyProducts());
+                    model.addAttribute("invoiceProducts",invoiceProductService.findByInvoiceId(id));
+                    model.addAttribute("clients",clientVendorService.listCompanyClientVendorsByType(ClientVendorType.CLIENT));
+
+                    return "/invoice/sales-invoice-update";
+                }
 
             invoiceProductService.create(invoiceProductDto,id);
 
