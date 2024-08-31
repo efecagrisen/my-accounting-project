@@ -66,4 +66,18 @@ public class ProductServiceImpl implements ProductService {
     public boolean doesCompanyCategoryHaveProduct(String categoryDescription, Long companyId) {
         return productRepository.existsProductByCompanyCategory(categoryDescription,companyId);
     }
+
+    @Override
+    public void increaseProductRemainingQuantity(Long productId, Integer quantity) {
+        Product productToBeUpdated = productRepository.findById(productId).orElseThrow();
+        productToBeUpdated.setQuantityInStock(productToBeUpdated.getQuantityInStock() + quantity);
+
+    }
+
+    @Override
+    public void decreaseProductRemainingQuantity(Long productId, Integer quantity) {
+        Product productToBeUpdated = productRepository.findById(productId).orElseThrow();
+        productToBeUpdated.setQuantityInStock(productToBeUpdated.getQuantityInStock() - quantity);
+
+    }
 }

@@ -2,13 +2,16 @@ package com.ecs.service.impl;
 
 import com.ecs.dto.InvoiceDto;
 import com.ecs.dto.InvoiceProductDto;
+import com.ecs.dto.ProductDto;
 import com.ecs.entity.Invoice;
+import com.ecs.entity.Product;
 import com.ecs.enums.InvoiceStatus;
 import com.ecs.enums.InvoiceType;
 import com.ecs.mapper.MapperUtil;
 import com.ecs.repository.InvoiceRepository;
 import com.ecs.service.InvoiceProductService;
 import com.ecs.service.InvoiceService;
+import com.ecs.service.ProductService;
 import com.ecs.service.SecurityService;
 import jdk.jfr.Percentage;
 import org.springframework.data.repository.cdi.Eager;
@@ -28,14 +31,16 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final InvoiceRepository invoiceRepository;
     private final SecurityService securityService;
     private final InvoiceProductService invoiceProductService;
+    private final ProductService productService;
 
 
-    public InvoiceServiceImpl(MapperUtil mapperUtil, InvoiceRepository invoiceRepository, SecurityService securityService, InvoiceProductService invoiceProductService) {
+    public InvoiceServiceImpl(MapperUtil mapperUtil, InvoiceRepository invoiceRepository, SecurityService securityService, InvoiceProductService invoiceProductService, ProductService productService) {
         this.mapperUtil = mapperUtil;
         this.invoiceRepository = invoiceRepository;
         this.securityService = securityService;
         this.invoiceProductService = invoiceProductService;
 
+        this.productService = productService;
     }
 
     private static final BigDecimal PERCENTAGE_DIVISOR = BigDecimal.valueOf(100);
@@ -241,9 +246,22 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public void approveInvoice(Long invoiceId) {
         Invoice invoiceToApprove = invoiceRepository.findById(invoiceId).get();
-        invoiceToApprove.setInvoiceStatus(InvoiceStatus.APPROVED);
-        invoiceRepository.save(invoiceToApprove);
 
+        List<InvoiceProductDto> productsOfInvoice = invoiceProductService.findByInvoiceId(invoiceId);
+
+            if (invoiceToApprove.getInvoiceType() == InvoiceType.PURCHASE){
+
+                productsOfInvoice.forEach(invoiceProductDto -> productService.increaseProductRemainingQuantity(invoiceProductDto.getProduct().getId(),invoiceProductDto.getQuantity()));
+            }
+
+            if (invoiceToApprove.getInvoiceType() == InvoiceType.SALES){
+                productsOfInvoice.forEach(invoiceProductDto -> productService.decreaseProductRemainingQuantity(invoiceProductDto.getProduct().getId(),invoiceProductDto.getQuantity()));
+            }
+
+        invoiceToApprove.setInvoiceStatus(InvoiceStatus.APPROVED);
+        invoiceToApprove.setDate(LocalDate.now());
+
+        invoiceRepository.save(invoiceToApprove);
     }
 
     @Override
