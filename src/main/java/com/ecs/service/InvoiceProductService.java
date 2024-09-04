@@ -5,6 +5,7 @@ import com.ecs.dto.InvoiceProductDto;
 import com.ecs.entity.Invoice;
 import com.ecs.enums.InvoiceType;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface InvoiceProductService {
@@ -23,6 +24,8 @@ public interface InvoiceProductService {
     void save(InvoiceProductDto invoiceProductDto);
 
     List<InvoiceProductDto> listPurchaseInvoiceProductsQuantityNotZero(Long companyId,String productName, InvoiceType invoiceType, int quantity);
+
+    BigDecimal calculateTotal(InvoiceProductDto invoiceProductDto);
 
 
 

@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,10 +45,30 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
 
     @Override
     public List<InvoiceProductDto> findByInvoiceId(Long id) {
-        return invoiceProductRepository.findByInvoiceId(id)
-                .stream()
-                .map(invoiceProduct -> mapperUtil.convert(invoiceProduct,InvoiceProductDto.class))
-                .collect(Collectors.toList());
+
+         List<InvoiceProduct> invoiceProductList = invoiceProductRepository.findByInvoiceId(id);
+         List<InvoiceProductDto> invoiceProductDtoList = invoiceProductList.stream()
+                 .map(invoiceProduct -> mapperUtil.convert(invoiceProduct,InvoiceProductDto.class))
+                 .toList();
+
+                invoiceProductDtoList.stream()
+                        .peek(invoiceProductDto -> {
+                            invoiceProductDto.setTotal(calculateTotal(invoiceProductDto));
+                            save(invoiceProductDto);
+                        })
+                        .collect(Collectors.toList());
+         return invoiceProductDtoList;
+    }
+
+    private static final BigDecimal PERCENTAGE_DIVISOR = BigDecimal.valueOf(100);
+
+    @Override
+    public BigDecimal calculateTotal(InvoiceProductDto invoiceProductDto) {
+
+        BigDecimal total = invoiceProductDto.getPrice().multiply(BigDecimal.valueOf(invoiceProductDto.getQuantity()));
+        BigDecimal taxRateModified =  BigDecimal.valueOf(invoiceProductDto.getTax()).divide(PERCENTAGE_DIVISOR,2, RoundingMode.HALF_UP);
+
+        return total.add(total.multiply(taxRateModified));
     }
 
     @Override

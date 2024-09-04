@@ -261,10 +261,7 @@
                   <td class="unit" th:text="'$ '+${invoiceProduct.price}"></td>
                   <td class="unit" th:text="${invoiceProduct.quantity}"></td>
                   <td class="unit" th:text="'% '+${invoiceProduct.tax}"></td>
-                  <td class="total" th:text="'$ '+${invoiceProduct.price + invoiceProduct.tax}"></td>
-<!--                  todo-->
-                  <!--                  temporary total calculation added to fix total coming null-->
-
+                  <td class="total" th:text="'$ '+${invoiceProduct.total}"></td>
                 </tr>
                 </tbody>
                 <tfoot>
