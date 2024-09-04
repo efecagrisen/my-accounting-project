@@ -2,6 +2,7 @@ package com.ecs.repository;
 
 import com.ecs.entity.Invoice;
 import com.ecs.entity.InvoiceProduct;
+import com.ecs.enums.InvoiceStatus;
 import com.ecs.enums.InvoiceType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -12,6 +13,7 @@ public interface InvoiceProductRepository extends JpaRepository<InvoiceProduct,L
     List<InvoiceProduct> findByInvoiceId(Long invoiceId);
 
     List<InvoiceProduct> getInvoiceProductsByInvoice_CompanyIdAndProduct_NameAndInvoice_InvoiceTypeAndQuantityNot(Long companyId,String productName, InvoiceType invoiceType, int quantity);
+    List<InvoiceProduct> getInvoiceProductsByInvoice_CompanyIdAndInvoice_InvoiceStatusOrderByInvoice_InsertDateTimeDesc(Long companyId, InvoiceStatus invoiceStatus);
 
 
 

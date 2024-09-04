@@ -5,6 +5,7 @@ import com.ecs.dto.InvoiceProductDto;
 import com.ecs.dto.ProductDto;
 import com.ecs.entity.Invoice;
 import com.ecs.entity.InvoiceProduct;
+import com.ecs.enums.InvoiceStatus;
 import com.ecs.enums.InvoiceType;
 import com.ecs.mapper.MapperUtil;
 import com.ecs.repository.InvoiceProductRepository;
@@ -36,6 +37,16 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
         this.companyService = companyService;
         this.invoiceService = invoiceService;
         this.securityService = securityService;
+    }
+
+    @Override
+    public List<InvoiceProductDto> listAllCompanyInvoiceProducts() {
+
+        List<InvoiceProduct> invoiceProductList = invoiceProductRepository.getInvoiceProductsByInvoice_CompanyIdAndInvoice_InvoiceStatusOrderByInvoice_InsertDateTimeDesc(securityService.getLoggedInUserCompanyId(), InvoiceStatus.APPROVED);
+
+        return invoiceProductList.stream()
+                .map(invoiceProduct -> mapperUtil.convert(invoiceProduct, InvoiceProductDto.class))
+                .toList();
     }
 
     @Override

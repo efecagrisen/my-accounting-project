@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface InvoiceProductService {
 
+    List<InvoiceProductDto> listAllCompanyInvoiceProducts();
     InvoiceProductDto findById(Long id);
     List<InvoiceProductDto> findByInvoiceId(Long id);
 
