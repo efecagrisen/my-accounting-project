@@ -11,6 +11,7 @@ import com.ecs.repository.InvoiceProductRepository;
 import com.ecs.service.CompanyService;
 import com.ecs.service.InvoiceProductService;
 import com.ecs.service.InvoiceService;
+import com.ecs.service.SecurityService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -26,12 +27,14 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
     private final InvoiceProductRepository invoiceProductRepository;
     private final CompanyService companyService;
     private final InvoiceService invoiceService;
+    private final SecurityService securityService;
 
-    public InvoiceProductServiceImpl(MapperUtil mapperUtil, InvoiceProductRepository invoiceProductRepository, CompanyService companyService, @Lazy InvoiceService invoiceService) {
+    public InvoiceProductServiceImpl(MapperUtil mapperUtil, InvoiceProductRepository invoiceProductRepository, CompanyService companyService, @Lazy InvoiceService invoiceService, SecurityService securityService) {
         this.mapperUtil = mapperUtil;
         this.invoiceProductRepository = invoiceProductRepository;
         this.companyService = companyService;
         this.invoiceService = invoiceService;
+        this.securityService = securityService;
     }
 
     @Override
@@ -52,6 +55,17 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
         return invoiceProductRepository.findAll().stream()
                 .map(product->mapperUtil.convert(product, InvoiceProductDto.class))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void save(InvoiceProductDto invoiceProductDto) {
+        invoiceProductRepository.save(mapperUtil.convert(invoiceProductDto,InvoiceProduct.class));
+    }
+
+    @Override
+    public List<InvoiceProductDto> listPurchaseInvoiceProductsQuantityNotZero(Long companyId, String productName, InvoiceType invoiceType, int quantity) {
+        return invoiceProductRepository.getInvoiceProductsByInvoice_CompanyIdAndProduct_NameAndInvoice_InvoiceTypeAndQuantityNot(securityService.getLoggedInUserCompanyId(), productName,InvoiceType.PURCHASE,0)
+                .stream().map(invoiceProduct -> mapperUtil.convert(invoiceProduct,InvoiceProductDto.class)).toList();
     }
 
     @Override

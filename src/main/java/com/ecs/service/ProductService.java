@@ -10,8 +10,8 @@ public interface ProductService {
 
 
 
-    void increaseProductRemainingQuantity(Long productId, Integer quantity);
-    void decreaseProductRemainingQuantity(Long productId, Integer quantity);
+    void increaseProductQuantityInStock(Long productId, Integer quantity);
+    void decreaseProductQuantityInStock(Long productId, Integer quantity);
 
     ProductDto findById(Long productId);
 

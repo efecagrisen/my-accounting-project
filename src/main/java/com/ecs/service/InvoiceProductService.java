@@ -20,6 +20,9 @@ public interface InvoiceProductService {
 
     void deleteById(Long invoiceProductId);
     void deleteByInvoice(InvoiceDto invoiceDto);
+    void save(InvoiceProductDto invoiceProductDto);
+
+    List<InvoiceProductDto> listPurchaseInvoiceProductsQuantityNotZero(Long companyId,String productName, InvoiceType invoiceType, int quantity);
 
 
 

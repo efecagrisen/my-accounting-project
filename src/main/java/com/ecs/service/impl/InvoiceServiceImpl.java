@@ -4,18 +4,22 @@ import com.ecs.dto.InvoiceDto;
 import com.ecs.dto.InvoiceProductDto;
 import com.ecs.dto.ProductDto;
 import com.ecs.entity.Invoice;
+import com.ecs.entity.InvoiceProduct;
 import com.ecs.entity.Product;
 import com.ecs.enums.InvoiceStatus;
 import com.ecs.enums.InvoiceType;
 import com.ecs.mapper.MapperUtil;
+import com.ecs.repository.InvoiceProductRepository;
 import com.ecs.repository.InvoiceRepository;
 import com.ecs.service.InvoiceProductService;
 import com.ecs.service.InvoiceService;
 import com.ecs.service.ProductService;
 import com.ecs.service.SecurityService;
+import jakarta.transaction.Transactional;
 import jdk.jfr.Percentage;
 import org.springframework.data.repository.cdi.Eager;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -32,15 +36,17 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final SecurityService securityService;
     private final InvoiceProductService invoiceProductService;
     private final ProductService productService;
+    private final InvoiceProductRepository invoiceProductRepository;
 
 
-    public InvoiceServiceImpl(MapperUtil mapperUtil, InvoiceRepository invoiceRepository, SecurityService securityService, InvoiceProductService invoiceProductService, ProductService productService) {
+    public InvoiceServiceImpl(MapperUtil mapperUtil, InvoiceRepository invoiceRepository, SecurityService securityService, InvoiceProductService invoiceProductService, ProductService productService, InvoiceProductRepository invoiceProductRepository) {
         this.mapperUtil = mapperUtil;
         this.invoiceRepository = invoiceRepository;
         this.securityService = securityService;
         this.invoiceProductService = invoiceProductService;
 
         this.productService = productService;
+        this.invoiceProductRepository = invoiceProductRepository;
     }
 
     private static final BigDecimal PERCENTAGE_DIVISOR = BigDecimal.valueOf(100);
@@ -247,16 +253,19 @@ public class InvoiceServiceImpl implements InvoiceService {
     public void approveInvoice(Long invoiceId) {
         Invoice invoiceToApprove = invoiceRepository.findById(invoiceId).get();
 
-        List<InvoiceProductDto> productsOfInvoice = invoiceProductService.findByInvoiceId(invoiceId);
+        List<InvoiceProductDto> productsOfInvoice = invoiceProductService.findByInvoiceId(invoiceToApprove.getId());
 
-            if (invoiceToApprove.getInvoiceType() == InvoiceType.PURCHASE){
-
-                productsOfInvoice.forEach(invoiceProductDto -> productService.increaseProductRemainingQuantity(invoiceProductDto.getProduct().getId(),invoiceProductDto.getQuantity()));
+        if (invoiceToApprove.getInvoiceType() == InvoiceType.SALES){
+            if (validateSalesInvoiceProduct(productsOfInvoice,invoiceId)){
+                saveSalesInvoiceProductProfitLossAndRemainingQuantity(productsOfInvoice);
+                decreaseProductRemainingQuantity(productsOfInvoice);
             }
+        }
 
-            if (invoiceToApprove.getInvoiceType() == InvoiceType.SALES){
-                productsOfInvoice.forEach(invoiceProductDto -> productService.decreaseProductRemainingQuantity(invoiceProductDto.getProduct().getId(),invoiceProductDto.getQuantity()));
-            }
+        if (invoiceToApprove.getInvoiceType() == InvoiceType.PURCHASE){
+            savePurchaseInvoiceProductProfitLossAndRemainingQuantity(productsOfInvoice);
+            increaseProductRemainingQuantity(productsOfInvoice);
+        }
 
         invoiceToApprove.setInvoiceStatus(InvoiceStatus.APPROVED);
         invoiceToApprove.setDate(LocalDate.now());
@@ -264,8 +273,111 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoiceRepository.save(invoiceToApprove);
     }
 
+    private void savePurchaseInvoiceProductProfitLossAndRemainingQuantity(List<InvoiceProductDto> invoiceProductDtoList){
+        invoiceProductDtoList.forEach(invoiceProductDto -> {
+            invoiceProductDto.setProfitLoss(BigDecimal.ZERO);
+            invoiceProductDto.setRemainingQuantity(invoiceProductDto.getQuantity());
+            invoiceProductService.save(invoiceProductDto);
+        });
+    }
+    private void saveSalesInvoiceProductProfitLossAndRemainingQuantity(List<InvoiceProductDto> invoiceProductDtoList){
+        invoiceProductDtoList.forEach(invoiceProductDto -> {
+            invoiceProductDto.setRemainingQuantity(0);
+            invoiceProductService.save(invoiceProductDto);
+            calculateTotalPurchaseInvoiceProductsRemainingQuantityProfitLossAndSave(invoiceProductDto);
+        });
+    }
+
+    private boolean validateSalesInvoiceProduct(List<InvoiceProductDto> invoiceProductDtoList, Long invoiceId){
+
+        invoiceProductDtoList.forEach(invoiceProductDto -> {
+            Integer currentRemainingQuantity = invoiceProductDto.getRemainingQuantity();
+            Integer quantityInStock = invoiceProductDto.getProduct().getQuantityInStock();
+
+            if (currentRemainingQuantity>quantityInStock){
+                invoiceProductService.removeInvoiceProductFromInvoice(invoiceId,invoiceProductDto.getId());
+                throw new RuntimeException("This invoice cannot be approved! Product does not have enough stock: "
+                + invoiceProductDto.getProduct().getName() + ". Product removed from invoice.");
+            }
+        });
+        return true;
+    }
+
+    private void decreaseProductRemainingQuantity(List<InvoiceProductDto> invoiceProductList) {
+        invoiceProductList.forEach(invoiceProductDTO -> {
+            ProductDto product = invoiceProductDTO.getProduct();
+            Integer quantity = invoiceProductDTO.getQuantity();
+            productService.decreaseProductQuantityInStock(product.getId(), quantity);
+        });
+    }
+
+    private void increaseProductRemainingQuantity(List<InvoiceProductDto> invoiceProductList) {
+        invoiceProductList.forEach(invoiceProductDTO -> {
+            ProductDto product = invoiceProductDTO.getProduct();
+            Integer quantity = invoiceProductDTO.getQuantity();
+            productService.increaseProductQuantityInStock(product.getId(), quantity);
+        });
+    }
+
+    @Transactional
+    public void calculateTotalPurchaseInvoiceProductsRemainingQuantityProfitLossAndSave(InvoiceProductDto invoiceProductDto){
+
+        //get purchase invoice products list quantity not zero
+        List<InvoiceProductDto> invoiceProductDtoList = invoiceProductService.listPurchaseInvoiceProductsQuantityNotZero(securityService.getLoggedInUserCompanyId(), invoiceProductDto.getProduct().getName(), InvoiceType.PURCHASE,0);
+
+        BigDecimal totalProfitLoss = BigDecimal.valueOf(0);
+
+        int salesQuantity = invoiceProductDto.getQuantity();
+
+            //iterate
+            for (InvoiceProductDto purchaseInvoiceProduct : invoiceProductDtoList){
+
+                Integer currentRemainingQuantity = purchaseInvoiceProduct.getRemainingQuantity();
+
+                Integer afterSalesRemainingQuantity = Math.max(currentRemainingQuantity - salesQuantity,0);
+
+                purchaseInvoiceProduct.setRemainingQuantity(afterSalesRemainingQuantity);
+                invoiceProductService.save(purchaseInvoiceProduct);
+
+                int soldQuantity = currentRemainingQuantity - afterSalesRemainingQuantity;
+                salesQuantity -= soldQuantity;
+
+                    if (salesQuantity <= 0){
+                        BigDecimal invoiceProductProfitLoss = (calculateProfitLossAndSaveToDataBase(invoiceProductDto,purchaseInvoiceProduct,soldQuantity));
+                        totalProfitLoss = totalProfitLoss.add(invoiceProductProfitLoss);
+                        invoiceProductDto.setProfitLoss(totalProfitLoss);
+                        invoiceProductService.save(invoiceProductDto);
+                        break;
+                    }
+
+                BigDecimal invoiceProductProfitLoss = (calculateProfitLossAndSaveToDataBase(invoiceProductDto,purchaseInvoiceProduct,soldQuantity));
+                totalProfitLoss = totalProfitLoss.add(invoiceProductProfitLoss);
+                invoiceProductDto.setProfitLoss(totalProfitLoss);
+                invoiceProductService.save(invoiceProductDto);
+            }
+    }
+
+    private BigDecimal calculateProfitLossAndSaveToDataBase(InvoiceProductDto salesInvoiceProductDto,InvoiceProductDto purchaseInvoiceProduct, int soldQuantity){
+        //calculate purchase total
+        BigDecimal totalPurchase = calculateTotal(purchaseInvoiceProduct.getPrice(),soldQuantity,purchaseInvoiceProduct.getTax());
+
+        //calculate sales total
+        BigDecimal totalSales = calculateTotal(salesInvoiceProductDto.getPrice(),soldQuantity,salesInvoiceProductDto.getTax());
+
+        //calculate and return profitLoss
+        return totalSales.subtract(totalPurchase);
+    }
+
+    private BigDecimal calculateTotal(BigDecimal price, int quantity, int taxRate){
+        BigDecimal totalPrice = price.multiply(BigDecimal.valueOf(quantity));
+        BigDecimal taxRateModified = BigDecimal.valueOf(taxRate).divide(PERCENTAGE_DIVISOR,2,RoundingMode.HALF_UP);
+        return totalPrice.add(totalPrice.multiply(taxRateModified));
+    }
+
     @Override
     public boolean existsByClientVendorId(Long clientVendorId) {
         return invoiceRepository.existsByClientVendorId(clientVendorId);
     }
+
+
 }

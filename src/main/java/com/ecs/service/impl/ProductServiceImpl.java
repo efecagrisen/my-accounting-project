@@ -68,16 +68,23 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void increaseProductRemainingQuantity(Long productId, Integer quantity) {
+    public void increaseProductQuantityInStock(Long productId, Integer quantity) {
         Product productToBeUpdated = productRepository.findById(productId).orElseThrow();
         productToBeUpdated.setQuantityInStock(productToBeUpdated.getQuantityInStock() + quantity);
-
+        productRepository.save(productToBeUpdated);
     }
 
     @Override
-    public void decreaseProductRemainingQuantity(Long productId, Integer quantity) {
+    public void decreaseProductQuantityInStock(Long productId, Integer quantity) {
         Product productToBeUpdated = productRepository.findById(productId).orElseThrow();
-        productToBeUpdated.setQuantityInStock(productToBeUpdated.getQuantityInStock() - quantity);
 
+        Integer newQuantity = productToBeUpdated.getQuantityInStock() - quantity;
+
+        if (newQuantity < 0){
+            throw new IllegalArgumentException("Quantity cannot be negative");
+        }
+
+        productToBeUpdated.setQuantityInStock(newQuantity);
+        productRepository.save(productToBeUpdated);
     }
 }

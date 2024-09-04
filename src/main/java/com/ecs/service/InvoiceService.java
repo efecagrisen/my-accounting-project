@@ -3,6 +3,7 @@ package com.ecs.service;
 import com.ecs.dto.InvoiceDto;
 import com.ecs.dto.InvoiceProductDto;
 import com.ecs.entity.Invoice;
+import com.ecs.entity.InvoiceProduct;
 import com.ecs.enums.InvoiceType;
 
 import java.math.BigDecimal;
@@ -41,5 +42,4 @@ public interface InvoiceService {
     void approveInvoice(Long invoiceId);
 
     boolean existsByClientVendorId(Long clientVendorId);
-
 }
