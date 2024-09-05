@@ -50,6 +50,12 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
     }
 
     @Override
+    public BigDecimal getProfitLossBasedOnOneMonth(int year, int month, Long companyId, InvoiceType invoiceType) {
+
+        return invoiceProductRepository.retrieveCompanyTotalProfitLossOfTheGivenMonth(year,month,companyId,InvoiceType.SALES);
+    }
+
+    @Override
     public InvoiceProductDto findById(Long id) {
         return mapperUtil.convert(invoiceProductRepository.findById(id).get(),InvoiceProductDto.class);
     }

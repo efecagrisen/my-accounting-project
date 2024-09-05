@@ -16,6 +16,8 @@ public interface InvoiceProductService {
 
     List<InvoiceProductDto> listAll();
 
+    BigDecimal getProfitLossBasedOnOneMonth(int year, int month, Long companyId, InvoiceType invoiceType);
+
     InvoiceProductDto create(InvoiceProductDto invoiceProductDto, Long invoiceId);
 
     void removeInvoiceProductFromInvoice(Long invoiceId, Long invoiceProductId);

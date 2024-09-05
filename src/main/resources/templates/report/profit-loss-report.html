@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head th:replace="fragments/head :: header"></head>
+<head th:replace="~{fragments/head :: header}"></head>
 <body>
 <div class="dashboard-main-wrapper">
-    <div th:replace="fragments/header :: header"></div>
-    <div th:replace="fragments/left-sidebar :: left-sidebar"></div>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <div th:replace="~{fragments/left-sidebar :: left-sidebar}"></div>
     <div class="dashboard-wrapper">
         <div class="dashboard-ecommerce">
             <div class="container-fluid dashboard-content">
@@ -30,10 +30,10 @@
                                                             </tr>
                                                             </thead>
                                                             <tbody>
-                                                            <tr th:each="month, comStat : ${monthlyProfitLossDataMap.keySet()}">
+                                                            <tr th:each="month, comStat : ${monthlyProfitLossDataMap}">
                                                                 <td th:text="${comStat.count}"></td>
-                                                                <td th:text="${month}"></td>
-                                                                <td th:text="${monthlyProfitLossDataMap.get(month)}"></td>
+                                                                <td th:text="${month.key}"></td>
+                                                                <td th:text="${month.value}"></td>
                                                             </tr>
                                                             </tbody>
                                                         </table>
@@ -51,7 +51,7 @@
         </div>
     </div>
 </div>
-<div th:replace="fragments/footer :: footer"></div>
-<div th:replace="fragments/javascript :: js"></div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<div th:replace="~{fragments/javascript :: js}"></div>
 </body>
 </html>
