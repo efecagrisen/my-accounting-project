@@ -379,5 +379,12 @@ public class InvoiceServiceImpl implements InvoiceService {
         return invoiceRepository.existsByClientVendorId(clientVendorId);
     }
 
-
+    @Override
+    public List<InvoiceDto> listCompaniesLastThreeApprovedInvoices() {
+        return invoiceRepository.findTop3ByCompanyIdAndInvoiceStatusOrderByDateDesc(securityService.getLoggedInUserCompanyId(), InvoiceStatus.APPROVED)
+                .stream()
+                .map(invoice -> findById(invoice.getId()))
+                // findById() sets the price, tax and total
+                .collect(Collectors.toList());
+    }
 }

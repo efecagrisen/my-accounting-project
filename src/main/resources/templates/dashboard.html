@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 
-<head th:replace="fragments/head :: header"></head>
+<head th:replace="~{fragments/head :: header}"></head>
 <head>
     <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css}"/>
     <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js}"/>
@@ -130,8 +130,8 @@
 
 <body>
     <div class="dashboard-main-wrapper">
-        <div th:replace="fragments/header :: header"></div>
-        <div th:replace="fragments/left-sidebar :: left-sidebar"></div>
+        <div th:replace="~{fragments/header :: header}"></div>
+        <div th:replace="~{fragments/left-sidebar :: left-sidebar}"></div>
         <div class="dashboard-wrapper">
             <div class="dashboard-ecommerce">
                 <div class="container-fluid dashboard-content mt-1 pt-1">
@@ -240,23 +240,28 @@
                                             <tbody>
                                             <tr>
                                                 <td>Euro</td>
-                                                <td th:text="${exchangeRates.getEuro()}"></td>
+<!--                                                <td th:text="${exchangeRates.getEuro()}"></td>-->
+                                                <td th:text="${exchangeRates}"></td>
                                             </tr>
                                             <tr>
                                                 <td>British Pound</td>
-                                                <td th:text="${exchangeRates.getBritishPound()}"></td>
+                                                <td th:text="${exchangeRates}"></td>
+<!--                                                <td th:text="${exchangeRates.getBritishPound()}"></td>-->
                                             </tr>
                                             <tr>
                                                 <td>Canadian Dollar</td>
-                                                <td th:text="${exchangeRates.getCanadianDollar()}"></td>
+                                                <td th:text="${exchangeRates}"></td>
+<!--                                                <td th:text="${exchangeRates.getCanadianDollar()}"></td>-->
                                             </tr>
                                             <tr>
                                                 <td>Japanese Yen</td>
-                                                <td th:text="${exchangeRates.getJapaneseYen()}"></td>
+                                                <td th:text="${exchangeRates}"></td>
+<!--                                                <td th:text="${exchangeRates.getJapaneseYen()}"></td>-->
                                             </tr>
                                             <tr>
                                                 <td>Indian Rupee</td>
-                                                <td th:text="${exchangeRates.getIndianRupee()}"></td>
+                                                <td th:text="${exchangeRates}"></td>
+<!--                                                <td th:text="${exchangeRates.getIndianRupee()}"></td>-->
                                             </tr>
                                             </tbody>
                                         </table>
@@ -269,8 +274,8 @@
             </div>
         </div>
     </div>
-    <div th:replace="fragments/footer :: footer"></div>
-    <div th:replace="fragments/javascript :: js"></div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+    <div th:replace="~{fragments/javascript :: js}"></div>
 </body>
 
 </html>
