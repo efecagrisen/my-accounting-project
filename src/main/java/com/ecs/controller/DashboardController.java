@@ -1,5 +1,7 @@
 package com.ecs.controller;
 
+import com.ecs.client.ExchangeClient;
+import com.ecs.dto.exchange.ExchangeRates;
 import com.ecs.enums.ExchangeRatesApiPlaceHolderTemp;
 import com.ecs.enums.InvoiceType;
 import com.ecs.service.DashboardService;
@@ -17,11 +19,13 @@ public class DashboardController {
     private final InvoiceService invoiceService;
     private final SecurityService securityService;
     private final DashboardService dashboardService;
+    private final ExchangeClient exchangeClient;
 
-    public DashboardController(InvoiceService invoiceService, SecurityService securityService, DashboardService dashboardService) {
+    public DashboardController(InvoiceService invoiceService, SecurityService securityService, DashboardService dashboardService, ExchangeClient exchangeClient) {
         this.invoiceService = invoiceService;
         this.securityService = securityService;
         this.dashboardService = dashboardService;
+        this.exchangeClient = exchangeClient;
     }
 
 
@@ -30,8 +34,9 @@ public class DashboardController {
 
         model.addAttribute("summaryNumbers", dashboardService.summaryNumbersCalculation());
         model.addAttribute("invoices", invoiceService.listCompaniesLastThreeApprovedInvoices());
-        model.addAttribute("exchangeRates", ExchangeRatesApiPlaceHolderTemp.values().length);
-        //todo api will be added for exchange rates
+//        model.addAttribute("exchangeRates", ExchangeRatesApiPlaceHolderTemp.values().length);
+        //api will be added for exchange rates --> DONE
+        model.addAttribute("exchangeRates", exchangeClient.getExchangeRates().getUsd());
 
         return "/dashboard";
     }
