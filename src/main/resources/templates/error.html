@@ -1,143 +1,99 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-
-<head th:replace="~{fragments/head :: header}"></head>
 <head>
-    <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css}"/>
-    <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js}"/>
-    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js}"/>
+    <meta charset="UTF-8">
+    <title>Error Page</title>
     <style>
-        .progress {
-            width: 150px;
-            height: 150px !important;
-            float: left;
-            line-height: 150px;
-            background: none;
-            margin: 20px;
-            box-shadow: none;
-            position: relative;
-        }
-        .progress:after {
-            content: "";
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 12px solid #fff;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-        .progress>span {
-            width: 50%;
-            height: 100%;
-            overflow: hidden;
-            position: absolute;
-            top: 0;
-            z-index: 1;
-        }
-        .progress .progress-left {
-            left: 0;
-        }
-        .progress .progress-bar {
-            width: 100%;
-            height: 100%;
-            background: none;
-            border-width: 12px;
-            border-style: solid;
-            position: absolute;
-            top: 0;
-        }
-        .progress .progress-left .progress-bar {
-            left: 100%;
-            border-top-right-radius: 80px;
-            border-bottom-right-radius: 80px;
-            border-left: 0;
-            -webkit-transform-origin: center left;
-            transform-origin: center left;
-        }
-        .progress .progress-right {
-            right: 0;
-        }
-        .progress .progress-right .progress-bar {
-            left: -100%;
-            border-top-left-radius: 80px;
-            border-bottom-left-radius: 80px;
-            border-right: 0;
-            -webkit-transform-origin: center right;
-            transform-origin: center right;
-            animation: loading-1 0.8s linear forwards;
-        }
-        .progress .progress-value {
-            width: 90%;
-            height: 90%;
-            border-radius: 50%;
-            background: #fff;
-            font-size: 24px;
-            color: #000;
-            line-height: 135px;
+        body {
+            background-color: #fff; /* Set a white background */
+            font-family: Arial, sans-serif;
             text-align: center;
-            position: absolute;
-            top: 5%;
-            left: 5%;
         }
-        .progress.blue .progress-bar {
-            border-color: #049dff;
+
+        .error-container {
+            max-width: 600px;
+            margin: 0 auto; /* Center the container horizontally */
+            padding: 20px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        .progress.blue .progress-left .progress-bar {
-            animation: loading-2 0.5s linear forwards 0.8s;
+
+        h1 {
+            color: #ff0000; /* Red color for the error message */
         }
-        .progress.yellow .progress-bar {
-            border-color: #fdba04;
+
+        img {
+            max-width: 100%;
+            display: block;
+            margin: 0 auto; /* Center the image horizontally */
         }
-        .progress.yellow .progress-right .progress-bar {
-            animation: loading-3 1.8s linear forwards;
+
+        p {
+            margin-top: 10px;
+            font-size: 18px;
         }
-        .progress.yellow .progress-left .progress-bar {
-            animation: none;
+        /* ... Existing CSS styles ... */
+
+        .home-button {
+            margin-top: 20px;
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #007bff;
+            color: #fff;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
-        @keyframes loading-1 {
-            0% {
-                -webkit-transform: rotate(0deg);
-                transform: rotate(0deg);
-            }
-            100% {
-                -webkit-transform: rotate(180deg);
-                transform: rotate(180deg);
-            }
+
+        .home-button:hover {
+            background-color: #0056b3;
+            color: #fff;
         }
-        @keyframes loading-2 {
-            0% {
-                -webkit-transform: rotate(0deg);
-                transform: rotate(0deg);
-            }
-            100% {
-                -webkit-transform: rotate(180deg);
-                transform: rotate(180deg);
-            }
+
+        .home-button span {
+            display: inline-block;
+            padding: 5px 10px;
+            transition: transform 0.3s ease;
         }
-        @keyframes loading-3 {
-            0% {
-                -webkit-transform: rotate(0deg);
-                transform: rotate(0deg);
-            }
-            100% {
-                -webkit-transform: rotate(135deg);
-                transform: rotate(135deg);
-            }
+
+        .home-button:hover span {
+            transform: scale(1.1);
         }
+
     </style>
 </head>
 <body>
-    <div class="dashboard-wrapper">
-    <div class="dashboard-ecommerce">
-        <div class="container-fluid dashboard-content">
-            <div class="ecommerce-widget">
-                <section class="panel">
-                    <header class="panel-heading text-center"><h3 class="panel-title">Exception Message</h3></header>
-                </section>
-            </div>
-        </div>
-    </div>
+<div class="error-container">
+    <h1>Oops! Something went wrong.</h1>
+
+    <!-- Error Image -->
+    <img src="/images/error_image.png" alt="Error Image">
+
+    <p th:if="${url}">
+        <b>Page:</b> <span th:text="${url}"></span>
+    </p>
+
+    <p th:if="${timestamp}">
+        <b>Occurred:</b> <span th:text="${timestamp}"></span>
+    </p>
+
+    <p th:if="${status}">
+        <b>Response Status:</b> <span th:text="${status}"></span> <span
+            th:if="${error}" th:text="' (' + ${error} + ')'"></span>
+    </p>
+
+    <p th:if="${exception}">
+        <b>Exception:</b> <span th:text="${exception.message}"></span>
+    </p>
+
+    <p>Application has encountered an error.</p>
+
+    <a class="home-button" th:href="@{/redirectToHome}">
+        <span>Go to Home</span>
+    </a>
 </div>
 </body>
 </html>

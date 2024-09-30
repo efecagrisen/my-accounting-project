@@ -1,14 +1,18 @@
 package com.ecs.service.impl;
 
+import com.ecs.dto.InvoiceProductDto;
 import com.ecs.dto.ProductDto;
 import com.ecs.entity.Company;
 import com.ecs.entity.Product;
+import com.ecs.exception.ProductLowLimitAlertException;
 import com.ecs.mapper.MapperUtil;
 import com.ecs.repository.ProductRepository;
+import com.ecs.service.InvoiceProductService;
 import com.ecs.service.ProductService;
 import com.ecs.service.SecurityService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,11 +22,13 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final MapperUtil mapperUtil;
     private final SecurityService securityService;
+    private final InvoiceProductService invoiceProductService;
 
-    public ProductServiceImpl(ProductRepository productRepository, MapperUtil mapperUtil, SecurityService securityService) {
+    public ProductServiceImpl(ProductRepository productRepository, MapperUtil mapperUtil, SecurityService securityService, InvoiceProductService invoiceProductService) {
         this.productRepository = productRepository;
         this.mapperUtil = mapperUtil;
         this.securityService = securityService;
+        this.invoiceProductService = invoiceProductService;
     }
 
     @Override
@@ -86,5 +92,29 @@ public class ProductServiceImpl implements ProductService {
 
         productToBeUpdated.setQuantityInStock(newQuantity);
         productRepository.save(productToBeUpdated);
+    }
+
+    @Override
+    public void checkProductLowLimitAlert(Long invoiceId) {
+        List<InvoiceProductDto> invoiceProductDtoList = invoiceProductService.findByInvoiceId(invoiceId);
+        List<String> productNamesBelowLowLimitAlert = new ArrayList<>();
+
+        invoiceProductDtoList.forEach(invoiceProductDto -> {
+            Integer quantityInStock = invoiceProductDto.getProduct().getQuantityInStock();
+            Integer lowLimitAlert = invoiceProductDto.getProduct().getLowLimitAlert();
+
+            if (quantityInStock < lowLimitAlert){
+                productNamesBelowLowLimitAlert.add(invoiceProductDto.getProduct().getName());
+            }
+        });
+
+//        String productNames = productNamesBelowLowLimitAlert.stream().collect(Collectors.joining(", "));
+        String productNames = String.join(", ",productNamesBelowLowLimitAlert);
+
+        if (! productNamesBelowLowLimitAlert.isEmpty()){
+            throw new ProductLowLimitAlertException("Stock of "+ productNames + " decreased below low limit!");
+        }
+
+
     }
 }

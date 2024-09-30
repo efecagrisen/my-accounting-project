@@ -21,4 +21,5 @@ public interface ProductService {
 
     boolean doesCompanyCategoryHaveProduct(String categoryDescription, Long companyId);
 
+    void checkProductLowLimitAlert(Long invoiceId);
 }

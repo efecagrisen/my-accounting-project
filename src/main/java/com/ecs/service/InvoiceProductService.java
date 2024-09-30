@@ -4,6 +4,7 @@ import com.ecs.dto.InvoiceDto;
 import com.ecs.dto.InvoiceProductDto;
 import com.ecs.entity.Invoice;
 import com.ecs.enums.InvoiceType;
+import org.springframework.validation.BindingResult;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -29,6 +30,11 @@ public interface InvoiceProductService {
     List<InvoiceProductDto> listPurchaseInvoiceProductsQuantityNotZero(Long companyId,String productName, InvoiceType invoiceType, int quantity);
 
     BigDecimal calculateTotal(InvoiceProductDto invoiceProductDto);
+
+    BindingResult doesProductHaveEnoughStock(InvoiceProductDto invoiceProductDTO, BindingResult bindingResult );
+
+    BindingResult validateProductStockBeforeAddingToInvoice(InvoiceProductDto invoiceProductDTO, Long invoiceId, BindingResult bindingResult);
+
 
 
 

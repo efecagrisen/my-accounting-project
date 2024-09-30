@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Product Low Limit Page</title>
+    <style>
+        /* General body styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        /* Container for the error message */
+        .error-container {
+            background-color: #fff;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        /* Styling for the main header */
+        .error-container h1 {
+            color: #d9534f;
+            font-size: 24px;
+        }
+
+        /* Styling for paragraphs */
+        .error-container p {
+            line-height: 1.5;
+        }
+
+        /* Image styling */
+        .error-container img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px 0;
+        }
+
+        /* Button styling */
+        .home-button {
+            display: inline-block;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+
+        .home-button:hover {
+            background-color: #0056b3;
+        }
+        .exception-message {
+            color: #d9534f;
+            font-weight: bold;
+        }
+
+        .exception-message span:last-child {
+            font-weight: normal;
+            color: #333;
+        }
+
+
+    </style>
+</head>
+<body>
+<div class="error-container">
+    <h1>Several items from your product inventory have fallen below the minimum threshold!</h1>
+
+    <!-- Error Image -->
+    <img src="/images/low-limit.png" alt="Below Limit Image">
+
+    <p th:if="${timestamp}">
+        <b>Occurred:</b> <span th:text="${timestamp}"></span>
+    </p>
+
+    <p th:if="${exception}" class="exception-message">
+        <span th:text="${exception.message}"></span>
+    </p>
+
+    <a class="home-button" th:href="@{/salesInvoices/list}">
+        <span>Continue</span>
+    </a>
+</div>
+
+</body>
+</html>

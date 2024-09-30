@@ -1,8 +1,10 @@
 package com.ecs.service.impl;
 
+import com.ecs.dto.CompanyDto;
 import com.ecs.dto.InvoiceDto;
 import com.ecs.dto.InvoiceProductDto;
 import com.ecs.dto.ProductDto;
+import com.ecs.entity.Company;
 import com.ecs.entity.Invoice;
 import com.ecs.entity.InvoiceProduct;
 import com.ecs.enums.InvoiceStatus;
@@ -15,6 +17,9 @@ import com.ecs.service.InvoiceService;
 import com.ecs.service.SecurityService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -147,10 +152,47 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
         invoiceProductDtoList.stream()
                 .filter(invoiceProductDto -> invoiceProductDto.getId() == invoiceProductId)
                 .forEach(invoiceProductDto -> deleteById(invoiceProductDto.getId()));
-
-
-
     }
 
+    @Override
+    public BindingResult validateProductStockBeforeAddingToInvoice(InvoiceProductDto productToAdd, Long invoiceId, BindingResult bindingResult) {
+        if (productToAdd.getProduct() != null) {
 
+            List<InvoiceProduct> existingInvoiceProducts = invoiceProductRepository.getInvoiceProductsByInvoice_CompanyIdAndInvoice_InvoiceStatusOrderByInvoice_InsertDateTimeDesc(securityService.getLoggedInUserCompanyId(), InvoiceStatus.AWAITING_APPROVAL);
+
+            Integer totalAddedQuantity = existingInvoiceProducts.stream()
+                    .filter(invoiceProduct -> invoiceProduct.getProduct().getId() == productToAdd.getProduct().getId())
+                    .map(InvoiceProduct::getQuantity)
+                    .reduce(0, Integer::sum);
+
+            Integer stockQuantity = productToAdd.getProduct().getQuantityInStock();
+
+            Integer requestedQuantity = productToAdd.getQuantity();
+
+            if ((totalAddedQuantity + requestedQuantity) > stockQuantity) {
+                String errorMessage = "Insufficient stock for product " + productToAdd.getProduct().getName() + ". Available stock (non approved exclusive): " + (stockQuantity - totalAddedQuantity);
+                FieldError stockError = new FieldError("newInvoiceProduct", "quantity", errorMessage);
+                bindingResult.addError(stockError);
+            }
+        }
+
+        return bindingResult;
+    }
+
+    @Override
+    public BindingResult doesProductHaveEnoughStock(InvoiceProductDto invoiceProductDTO, BindingResult bindingResult) {
+        if (invoiceProductDTO.getProduct() != null) {
+            if (invoiceProductDTO.getProduct().getQuantityInStock() != null) {
+                if (invoiceProductDTO.getQuantity() != null) {
+                    Integer invoiceProductQuantity = invoiceProductDTO.getQuantity();
+                    Integer quantityInStock = invoiceProductDTO.getProduct().getQuantityInStock();
+                    if (quantityInStock < invoiceProductQuantity) {
+                        ObjectError error = new FieldError("newInvoiceProduct", "quantity", "Product " + invoiceProductDTO.getProduct().getName() + " has no enough stock! Original stock: " + quantityInStock);
+                        bindingResult.addError(error);
+                    }
+                }
+            }
+        }
+        return bindingResult;
+    }
 }

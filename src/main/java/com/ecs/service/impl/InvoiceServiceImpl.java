@@ -8,6 +8,8 @@ import com.ecs.entity.InvoiceProduct;
 import com.ecs.entity.Product;
 import com.ecs.enums.InvoiceStatus;
 import com.ecs.enums.InvoiceType;
+import com.ecs.exception.ProductLowLimitAlertException;
+import com.ecs.exception.ProductNotFoundException;
 import com.ecs.mapper.MapperUtil;
 import com.ecs.repository.InvoiceProductRepository;
 import com.ecs.repository.InvoiceRepository;
@@ -294,10 +296,11 @@ public class InvoiceServiceImpl implements InvoiceService {
             Integer currentRemainingQuantity = invoiceProductDto.getRemainingQuantity();
             Integer quantityInStock = invoiceProductDto.getProduct().getQuantityInStock();
 
+
             if (currentRemainingQuantity>quantityInStock){
                 invoiceProductService.removeInvoiceProductFromInvoice(invoiceId,invoiceProductDto.getId());
-                throw new RuntimeException("This invoice cannot be approved! Product does not have enough stock: "
-                + invoiceProductDto.getProduct().getName() + ". Product removed from invoice.");
+                throw new ProductNotFoundException("Stock of "
+                + invoiceProductDto.getProduct().getName() + " is not enough to approve this invoice. Please update the invoice. Product removed from invoice.");
             }
         });
         return true;

@@ -95,6 +95,9 @@ public class SalesInvoiceController {
         @PostMapping("/addInvoiceProduct/{id}")
         public String addInvoiceProduct(@PathVariable ("id") Long id,@Valid @ModelAttribute ("newInvoiceProduct") InvoiceProductDto invoiceProductDto,BindingResult bindingResult,Model model){
 
+            bindingResult = invoiceProductService.doesProductHaveEnoughStock(invoiceProductDto, bindingResult);
+            bindingResult = invoiceProductService.validateProductStockBeforeAddingToInvoice(invoiceProductDto, id , bindingResult);
+
                 if (bindingResult.hasFieldErrors()){
                     InvoiceDto foundInvoice = invoiceService.findById(id);
 
@@ -124,6 +127,7 @@ public class SalesInvoiceController {
         public String approveSalesInvoice(@PathVariable ("id") Long id){
 
             invoiceService.approveInvoice(id);
+            productService.checkProductLowLimitAlert(id);
 
             return "redirect:/salesInvoices/list";
 
