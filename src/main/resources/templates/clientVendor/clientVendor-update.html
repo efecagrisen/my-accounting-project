@@ -197,7 +197,7 @@
                                                                     <select th:field="*{address.country}" id="country" name="country" class="custom-select">
                                                                         <option th:each="country:${countries}"
                                                                                 th:value="${country}"
-                                                                                th:text="${country.value}"
+                                                                                th:text="${country}"
                                                                                 th:selected="${country}==*{address.country}"></option>
                                                                     </select>
                                                                     <div th:if="${#fields.hasErrors('address.country')}">

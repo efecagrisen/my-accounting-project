@@ -1,6 +1,7 @@
 package com.ecs.service;
 
 import com.ecs.dto.CompanyDto;
+import com.ecs.dto.CountriesDto;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
@@ -29,5 +30,7 @@ public interface CompanyService {
 
     BindingResult addTitleValidation(String title,BindingResult bindingResult);
     BindingResult addUpdateTitleValidation(CompanyDto companyDto,BindingResult bindingResult);
+
+    List<String> getCountries();
 
 }

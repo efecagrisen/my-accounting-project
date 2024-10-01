@@ -1,11 +1,14 @@
 package com.ecs.service.impl;
 
+import com.ecs.client.CountryClient;
 import com.ecs.dto.ClientVendorDto;
+import com.ecs.dto.CountriesDto;
 import com.ecs.entity.ClientVendor;
 import com.ecs.enums.ClientVendorType;
 import com.ecs.mapper.MapperUtil;
 import com.ecs.repository.ClientVendorRepository;
 import com.ecs.service.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -24,8 +27,9 @@ public class ClientVendorServiceImpl implements ClientVendorService {
     private final RoleService roleService;
     private final SecurityService securityService;
     private final InvoiceService invoiceService;
+    private final CountryClient countryClient;
 
-    public ClientVendorServiceImpl(MapperUtil mapperUtil, ClientVendorRepository clientVendorRepository, UserService userService, CompanyService companyService, RoleService roleService, SecurityService securityService, InvoiceService invoiceService) {
+    public ClientVendorServiceImpl(MapperUtil mapperUtil, ClientVendorRepository clientVendorRepository, UserService userService, CompanyService companyService, RoleService roleService, SecurityService securityService, InvoiceService invoiceService, CountryClient countryClient) {
         this.mapperUtil = mapperUtil;
         this.clientVendorRepository = clientVendorRepository;
         this.userService = userService;
@@ -33,8 +37,11 @@ public class ClientVendorServiceImpl implements ClientVendorService {
         this.roleService = roleService;
         this.securityService = securityService;
         this.invoiceService = invoiceService;
+        this.countryClient = countryClient;
     }
 
+    @Value("${COUNTRIES_API_KEY}")
+    private String countriesApiKey;
 
     @Override
     public ClientVendorDto findById(Long id) {
@@ -56,7 +63,7 @@ public class ClientVendorServiceImpl implements ClientVendorService {
     @Override
     public List<ClientVendorDto> listCompanyClientVendorsByType(ClientVendorType clientVendorType) {
         return listCompanyClientVendors().stream()
-                .filter(p->p.getClientVendorType().equals(clientVendorType))
+                .filter(p -> p.getClientVendorType().equals(clientVendorType))
                 .collect(Collectors.toList());
     }
 
@@ -84,12 +91,22 @@ public class ClientVendorServiceImpl implements ClientVendorService {
     }
 
     @Override
-    public BindingResult checkClientVendorNameExistsByType(String clientVendorName,ClientVendorType clientVendorType, BindingResult bindingResult) {
+    public BindingResult checkClientVendorNameExistsByType(String clientVendorName, ClientVendorType clientVendorType, BindingResult bindingResult) {
 
-            if (clientVendorRepository.existsClientVendorByClientVendorNameAndClientVendorType(clientVendorName,clientVendorType)){
-                bindingResult.addError(new FieldError("newClientVendor","clientVendorName","This name already exists"));
-            }
+        if (clientVendorRepository.existsClientVendorByClientVendorNameAndClientVendorType(clientVendorName, clientVendorType)) {
+            bindingResult.addError(new FieldError("newClientVendor", "clientVendorName", "This name already exists"));
+        }
         return bindingResult;
     }
 
+    @Override
+    public List<String> getCountries() {
+        List<CountriesDto> apiResponse = countryClient.getAllCountries(countriesApiKey);
+        List<String> countryList = apiResponse.stream()
+                .map(CountriesDto::getCountryName)
+                .collect(Collectors.toList());
+
+        return countryList;
+
+    }
 }

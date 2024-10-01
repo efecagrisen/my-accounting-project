@@ -201,7 +201,7 @@
                                                                         <option th:value="''" th:text="'Select'"></option>
                                                                         <option th:each="country:${countries}"
                                                                                 th:value="${country}"
-                                                                                th:text="${country.value}"></option>
+                                                                                th:text="${country}"></option>
                                                                     </select>
                                                                     <div th:if="${#fields.hasErrors('address.country')}">
                                                                         <ul>

@@ -54,7 +54,7 @@ public class ClientVendorController {
     public String createClientVendor(Model model){
 
         model.addAttribute("newClientVendor", new ClientVendorDto());
-        model.addAttribute("countries", CountriesApiPlaceHolderTemp.values());
+        model.addAttribute("countries", clientVendorService.getCountries());
         model.addAttribute("clientVendorTypes", Arrays.asList(ClientVendorType.values()));
 
         return "/clientVendor/clientVendor-create";
@@ -66,7 +66,7 @@ public class ClientVendorController {
         bindingResult = clientVendorService.checkClientVendorNameExistsByType(clientVendorDto.getClientVendorName(),clientVendorDto.getClientVendorType(),bindingResult);
 
         if (bindingResult.hasFieldErrors()){
-            model.addAttribute("countries", CountriesApiPlaceHolderTemp.values());
+            model.addAttribute("countries", clientVendorService.getCountries());
             model.addAttribute("clientVendorTypes", Arrays.asList(ClientVendorType.values()));
 
             return "clientVendor/clientVendor-create";
@@ -82,7 +82,7 @@ public class ClientVendorController {
     public String editClientVendor(@PathVariable("id") Long id, Model model){
 
         model.addAttribute("clientVendor", clientVendorService.findById(id));
-        model.addAttribute("countries", CountriesApiPlaceHolderTemp.values());
+        model.addAttribute("countries", clientVendorService.getCountries());
         model.addAttribute("clientVendorTypes", Arrays.asList(ClientVendorType.values()));
 
         return "/clientVendor/clientVendor-update";
@@ -92,7 +92,7 @@ public class ClientVendorController {
     public String updateClientVendor(@Valid @ModelAttribute("clientVendor") ClientVendorDto clientVendorDto, BindingResult bindingResult, Model model){
 
         if (bindingResult.hasFieldErrors()){
-            model.addAttribute("countries", CountriesApiPlaceHolderTemp.values());
+            model.addAttribute("countries", clientVendorService.getCountries());
             model.addAttribute("clientVendorTypes", Arrays.asList(ClientVendorType.values()));
 
             return "clientVendor/clientVendor-update";

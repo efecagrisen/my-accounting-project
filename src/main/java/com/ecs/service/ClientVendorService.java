@@ -22,4 +22,6 @@ public interface ClientVendorService {
 
     BindingResult checkClientVendorNameExistsByType(String clientVendorName,ClientVendorType clientVendorType, BindingResult bindingResult);
 
+    List<String> getCountries();
+
 }

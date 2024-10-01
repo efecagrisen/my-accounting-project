@@ -1,6 +1,8 @@
 package com.ecs.service.impl;
 
+import com.ecs.client.CountryClient;
 import com.ecs.dto.CompanyDto;
+import com.ecs.dto.CountriesDto;
 import com.ecs.dto.UserDto;
 import com.ecs.entity.Company;
 import com.ecs.entity.User;
@@ -11,6 +13,7 @@ import com.ecs.repository.CompanyRepository;
 import com.ecs.repository.UserRepository;
 import com.ecs.service.CompanyService;
 import com.ecs.service.SecurityService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -19,6 +22,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -31,13 +35,18 @@ public class CompanyServiceImpl implements CompanyService {
     private final UserRepository userRepository;
     private final CompanyRepository companyRepository;
     private final SecurityService securityService;
+    private final CountryClient countryClient;
 
-    public CompanyServiceImpl(MapperUtil mapperUtil, UserRepository userRepository, CompanyRepository companyRepository, SecurityService securityService) {
+    public CompanyServiceImpl(MapperUtil mapperUtil, UserRepository userRepository, CompanyRepository companyRepository, SecurityService securityService, CountryClient countryClient) {
         this.mapperUtil = mapperUtil;
         this.userRepository = userRepository;
         this.companyRepository = companyRepository;
         this.securityService = securityService;
+        this.countryClient = countryClient;
     }
+
+    @Value("${COUNTRIES_API_KEY}")
+    private String countriesApiKey;
 
     @Override
     public List<CompanyDto> getCompanyDtoByLoggedInUser() {
@@ -152,6 +161,13 @@ public class CompanyServiceImpl implements CompanyService {
         return bindingResult;
     }
 
+    @Override
+    public List<String> getCountries() {
+        List<CountriesDto> apiResponse = countryClient.getAllCountries(countriesApiKey);
+        List<String> countryList = apiResponse.stream()
+                .map(CountriesDto::getCountryName)
+                .collect(Collectors.toList());
 
-
+        return countryList;
+    }
 }

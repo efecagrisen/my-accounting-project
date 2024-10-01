@@ -40,7 +40,7 @@ public class CompanyController {
     public String createCompany(Model model){
 
         model.addAttribute("newCompany",new CompanyDto());
-        model.addAttribute("countries", CountriesApiPlaceHolderTemp.values());
+        model.addAttribute("countries", companyService.getCountries());
 
         return "company/company-create";
     }
@@ -51,7 +51,7 @@ public class CompanyController {
         bindingResult = companyService.addTitleValidation(newCompany.getTitle(), bindingResult);
 
         if (bindingResult.hasFieldErrors()){
-            model.addAttribute("countries", CountriesApiPlaceHolderTemp.values());
+            model.addAttribute("countries", companyService.getCountries());
             return "company/company-create";
         }
 
@@ -82,7 +82,7 @@ public class CompanyController {
     public String editCompany(@PathVariable ("id") Long companyId, Model model){
 
         model.addAttribute("company",companyService.findById(companyId));
-        model.addAttribute("countries", CountriesApiPlaceHolderTemp.values());
+        model.addAttribute("countries", companyService.getCountries());
 
         return "/company/company-update";
     }
@@ -93,7 +93,7 @@ public class CompanyController {
         bindingResult = companyService.addUpdateTitleValidation(company,bindingResult);
 
         if (bindingResult.hasFieldErrors()){
-            model.addAttribute("countries", CountriesApiPlaceHolderTemp.values());
+            model.addAttribute("countries", companyService.getCountries());
             return "/company/company-update";
         }
 
